@@ -1,0 +1,29 @@
+<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="300" height="300" fill="#f8f9fa"/>
+  
+  <!-- T-shirt shape -->
+  <path d="M80 80 L80 120 L70 140 L70 280 L230 280 L230 140 L220 120 L220 80 L190 80 L190 70 L110 70 L110 80 Z" 
+        fill="#34495e" stroke="#2c3e50" stroke-width="2"/>
+  
+  <!-- Neckline -->
+  <path d="M110 70 Q150 90 190 70" fill="none" stroke="#2c3e50" stroke-width="2"/>
+  
+  <!-- Vintage distressed effect -->
+  <circle cx="120" cy="130" r="3" fill="#2c3e50" opacity="0.6"/>
+  <circle cx="180" cy="140" r="2" fill="#2c3e50" opacity="0.6"/>
+  <circle cx="160" cy="250" r="4" fill="#2c3e50" opacity="0.6"/>
+  
+  <!-- Band logo design -->
+  <ellipse cx="150" cy="170" rx="45" ry="25" fill="none" stroke="#e74c3c" stroke-width="3"/>
+  <text x="150" y="175" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#e74c3c" font-weight="bold">ROCK</text>
+  <text x="150" y="190" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#e74c3c">LEGENDS</text>
+  
+  <!-- Lightning bolts -->
+  <path d="M105 160 L110 170 L107 175 L112 180" stroke="#f39c12" stroke-width="2" fill="none"/>
+  <path d="M190 160 L195 170 L192 175 L197 180" stroke="#f39c12" stroke-width="2" fill="none"/>
+  
+  <!-- Text -->
+  <text x="150" y="220" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#95a5a6">VINTAGE</text>
+  <text x="150" y="235" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#95a5a6">COLLECTION</text>
+</svg>

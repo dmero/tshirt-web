@@ -1,0 +1,88 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - T-Shirt Shop{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="product-detail">
+        <div class="product-images">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="main-image">
+            {% else %}
+                <img src="{% static 'images/placeholder.jpg' %}" alt="{{ product.name }}" class="main-image">
+            {% endif %}
+        </div>
+        
+        <div class="product-info">
+            <nav class="breadcrumb">
+                <a href="{% url 'shop:index' %}">Home</a> > 
+                <span>{{ product.category.name }}</span> > 
+                <span>{{ product.name }}</span>
+            </nav>
+            
+            <h1>{{ product.name }}</h1>
+            <p class="price">${{ product.price }}</p>
+            
+            <div class="product-description">
+                <p>{{ product.description }}</p>
+            </div>
+            
+            <form class="add-to-cart-form" onsubmit="addToCart(event)">
+                <div class="size-selector">
+                    <label for="size">Size:</label>
+                    <select name="size" id="size" required>
+                        <option value="">Select Size</option>
+                        {% for size in sizes %}
+                            <option value="{{ size }}">{{ size }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="quantity-selector">
+                    <label for="quantity">Quantity:</label>
+                    <div class="quantity-controls">
+                        <button type="button" onclick="decreaseQuantity()">-</button>
+                        <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ product.stock }}">
+                        <button type="button" onclick="increaseQuantity()">+</button>
+                    </div>
+                </div>
+                
+                <div class="stock-info">
+                    <p>In Stock: {{ product.stock }} items</p>
+                </div>
+                
+                <input type="hidden" name="product_id" value="{{ product.id }}">
+                
+                <button type="submit" class="btn-primary add-to-cart-btn">
+                    <i class="fas fa-cart-plus"></i>
+                    Add to Cart
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function increaseQuantity() {
+    const quantityInput = document.getElementById('quantity');
+    const currentValue = parseInt(quantityInput.value);
+    const maxValue = parseInt(quantityInput.max);
+    
+    if (currentValue < maxValue) {
+        quantityInput.value = currentValue + 1;
+    }
+}
+
+function decreaseQuantity() {
+    const quantityInput = document.getElementById('quantity');
+    const currentValue = parseInt(quantityInput.value);
+    
+    if (currentValue > 1) {
+        quantityInput.value = currentValue - 1;
+    }
+}
+</script>
+{% endblock %}

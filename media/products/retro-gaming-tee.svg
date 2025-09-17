@@ -1,0 +1,32 @@
+<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="300" height="300" fill="#f8f9fa"/>
+  
+  <!-- T-shirt shape -->
+  <path d="M80 80 L80 120 L70 140 L70 280 L230 280 L230 140 L220 120 L220 80 L190 80 L190 70 L110 70 L110 80 Z" 
+        fill="#2c3e50" stroke="#1a252f" stroke-width="2"/>
+  
+  <!-- Neckline -->
+  <path d="M110 70 Q150 90 190 70" fill="none" stroke="#1a252f" stroke-width="2"/>
+  
+  <!-- Retro gaming elements -->
+  <!-- Pixel character -->
+  <rect x="130" y="160" width="8" height="8" fill="#f39c12"/>
+  <rect x="138" y="160" width="8" height="8" fill="#f39c12"/>
+  <rect x="146" y="160" width="8" height="8" fill="#f39c12"/>
+  <rect x="162" y="160" width="8" height="8" fill="#f39c12"/>
+  <rect x="130" y="168" width="8" height="8" fill="#f39c12"/>
+  <rect x="146" y="168" width="8" height="8" fill="#e67e22"/>
+  <rect x="154" y="168" width="8" height="8" fill="#e67e22"/>
+  <rect x="162" y="168" width="8" height="8" fill="#f39c12"/>
+  
+  <!-- 8-bit stars -->
+  <rect x="100" y="120" width="4" height="4" fill="#f1c40f"/>
+  <rect x="190" y="130" width="4" height="4" fill="#f1c40f"/>
+  <rect x="110" y="250" width="4" height="4" fill="#f1c40f"/>
+  <rect x="180" y="240" width="4" height="4" fill="#f1c40f"/>
+  
+  <!-- Text -->
+  <text x="150" y="210" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#e74c3c" font-weight="bold">RETRO</text>
+  <text x="150" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#e74c3c">GAMING</text>
+</svg>

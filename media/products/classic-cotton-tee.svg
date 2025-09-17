@@ -1,0 +1,15 @@
+<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="300" height="300" fill="#f8f9fa"/>
+  
+  <!-- T-shirt shape -->
+  <path d="M80 80 L80 120 L70 140 L70 280 L230 280 L230 140 L220 120 L220 80 L190 80 L190 70 L110 70 L110 80 Z" 
+        fill="#4a90e2" stroke="#2c5aa0" stroke-width="2"/>
+  
+  <!-- Neckline -->
+  <path d="M110 70 Q150 90 190 70" fill="none" stroke="#2c5aa0" stroke-width="2"/>
+  
+  <!-- Text -->
+  <text x="150" y="200" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="white" font-weight="bold">CLASSIC</text>
+  <text x="150" y="220" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white">Cotton Tee</text>
+</svg>

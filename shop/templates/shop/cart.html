@@ -1,0 +1,75 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block title %}Shopping Cart - T-Shirt Shop{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Shopping Cart</h1>
+    
+    {% if cart_items %}
+        <div class="cart-page">
+            <div class="cart-items-list">
+                {% for item in cart_items %}
+                <div class="cart-item" data-item-id="{{ item.id }}">
+                    <div class="item-image">
+                        {% if item.product.image %}
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                        {% else %}
+                            <img src="{% static 'images/placeholder.jpg' %}" alt="{{ item.product.name }}">
+                        {% endif %}
+                    </div>
+                    
+                    <div class="item-details">
+                        <h3>{{ item.product.name }}</h3>
+                        <p>Size: {{ item.size }}</p>
+                        <p class="item-price">${{ item.product.price }}</p>
+                    </div>
+                    
+                    <div class="quantity-controls">
+                        <button onclick="updateCartItemQuantity({{ item.id }}, {{ item.quantity }} - 1)">-</button>
+                        <span class="quantity">{{ item.quantity }}</span>
+                        <button onclick="updateCartItemQuantity({{ item.id }}, {{ item.quantity }} + 1)">+</button>
+                    </div>
+                    
+                    <div class="item-total">
+                        <strong>${{ item.get_total_price }}</strong>
+                    </div>
+                    
+                    <button class="remove-item" onclick="removeCartItem({{ item.id }})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="cart-summary">
+                <h3>Order Summary</h3>
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span>${{ cart.get_total_price }}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping:</span>
+                    <span>Free</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total:</span>
+                    <span>${{ cart.get_total_price }}</span>
+                </div>
+                
+                <a href="{% url 'shop:checkout' %}" class="btn-primary checkout-btn">
+                    Proceed to Checkout
+                </a>
+            </div>
+        </div>
+    {% else %}
+        <div class="empty-cart-page">
+            <i class="fas fa-shopping-cart"></i>
+            <h2>Your cart is empty</h2>
+            <p>Start shopping to add items to your cart</p>
+            <a href="{% url 'shop:index' %}" class="btn-primary">Continue Shopping</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
