@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <title>{% block title %}T-Shirt Shop{% endblock %}</title>
+    {% load static %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="{% url 'shop:index' %}">
+                    <i class="fas fa-tshirt"></i>
+                    T-Shirt Shop
+                </a>
+            </div>
+            <!-- Hamburger toggle for mobile -->
+            <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="nav-menu">
+                <a href="{% url 'shop:index' %}" class="nav-link">Home</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'shop:my_orders' %}" class="nav-link">My Orders</a>
+                    <form method="post" action="{% url 'logout' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-link logout-btn">Logout</button>
+                    </form>
+                    <span class="nav-link">Hello, {{ user.first_name|default:user.username }}</span>
+                {% else %}
+                    <a href="{% url 'login' %}" class="nav-link">Login</a>
+                    <a href="{% url 'shop:signup' %}" class="nav-link">Sign Up</a>
+                {% endif %}
+                
+                <!-- Cart Icon -->
+                <button class="cart-btn" onclick="toggleCart()">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Shopping Cart</h3>
+            <button class="close-cart" onclick="toggleCart()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="cart-items" id="cart-items">
+            <div class="empty-cart" id="empty-cart">
+                <i class="fas fa-shopping-cart"></i>
+                <p>Your cart is empty</p>
+            </div>
+        </div>
+        
+        <div class="cart-footer" id="cart-footer" style="display: none;">
+            <div class="cart-total">
+                <strong>Total: $<span id="cart-total">0.00</span></strong>
+            </div>
+            <button class="checkout-btn" onclick="goToCheckout()">
+                Proceed to Checkout
+            </button>
+        </div>
+    </div>
+
+    <!-- Cart Overlay -->
+    <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>T-Shirt Shop</h4>
+                <p>Quality t-shirts for every style and occasion.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Customer Service</h4>
+                <a href="#">Contact Us</a>
+                <a href="#">Shipping Info</a>
+                <a href="#">Returns</a>
+            </div>
+            <div class="footer-section">
+                <h4>Follow Us</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 T-Shirt Shop. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/cart.js' %}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

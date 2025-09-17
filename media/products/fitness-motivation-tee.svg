@@ -1,0 +1,29 @@
+<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="300" height="300" fill="#f8f9fa"/>
+  
+  <!-- T-shirt shape -->
+  <path d="M80 80 L80 120 L70 140 L70 280 L230 280 L230 140 L220 120 L220 80 L190 80 L190 70 L110 70 L110 80 Z" 
+        fill="#9b59b6" stroke="#8e44ad" stroke-width="2"/>
+  
+  <!-- Neckline -->
+  <path d="M110 70 Q150 90 190 70" fill="none" stroke="#8e44ad" stroke-width="2"/>
+  
+  <!-- Motivational elements -->
+  <!-- Dumbbell icon -->
+  <rect x="135" y="145" width="30" height="4" fill="#f1c40f"/>
+  <circle cx="135" cy="147" r="6" fill="#f39c12"/>
+  <circle cx="165" cy="147" r="6" fill="#f39c12"/>
+  
+  <!-- Lightning/energy lines -->
+  <path d="M120 130 L125 135" stroke="#f1c40f" stroke-width="2"/>
+  <path d="M175 130 L180 135" stroke="#f1c40f" stroke-width="2"/>
+  <path d="M125 160 L130 165" stroke="#f1c40f" stroke-width="2"/>
+  <path d="M170 160 L175 165" stroke="#f1c40f" stroke-width="2"/>
+  
+  <!-- Text -->
+  <text x="150" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">NO PAIN</text>
+  <text x="150" y="200" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">NO GAIN</text>
+  <text x="150" y="225" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#f1c40f">PUSH YOUR LIMITS</text>
+  <text x="150" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#f1c40f">ACHIEVE GREATNESS</text>
+</svg>

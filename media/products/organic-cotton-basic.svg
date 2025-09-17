@@ -1,0 +1,28 @@
+<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="300" height="300" fill="#f8f9fa"/>
+  
+  <!-- T-shirt shape -->
+  <path d="M80 80 L80 120 L70 140 L70 280 L230 280 L230 140 L220 120 L220 80 L190 80 L190 70 L110 70 L110 80 Z" 
+        fill="#27ae60" stroke="#2ecc71" stroke-width="2"/>
+  
+  <!-- Neckline -->
+  <path d="M110 70 Q150 90 190 70" fill="none" stroke="#2ecc71" stroke-width="2"/>
+  
+  <!-- Organic/eco elements -->
+  <!-- Leaf design -->
+  <path d="M130 150 Q135 140 145 145 Q140 155 130 150 Z" fill="#2ecc71"/>
+  <path d="M135 145 L142 152" stroke="#27ae60" stroke-width="1"/>
+  
+  <path d="M170 150 Q175 140 185 145 Q180 155 170 150 Z" fill="#2ecc71"/>
+  <path d="M175 145 L182 152" stroke="#27ae60" stroke-width="1"/>
+  
+  <!-- Eco badge -->
+  <circle cx="150" cy="190" r="25" fill="#2ecc71" stroke="#27ae60" stroke-width="2"/>
+  <text x="150" y="188" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="white" font-weight="bold">100%</text>
+  <text x="150" y="198" text-anchor="middle" font-family="Arial, sans-serif" font-size="7" fill="white">ORGANIC</text>
+  
+  <!-- Text -->
+  <text x="150" y="240" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="white" font-weight="bold">ECO-FRIENDLY</text>
+  <text x="150" y="255" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="white">Cotton Basic</text>
+</svg>

@@ -1,0 +1,54 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block title %}Checkout - T-Shirt Shop{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Checkout</h1>
+    
+    <div class="checkout-page">
+        <div class="checkout-form">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-section">
+                    <h3>Shipping Information</h3>
+                    <div class="form-group">
+                        <label for="shipping_address">Shipping Address:</label>
+                        <textarea name="shipping_address" id="shipping_address" required 
+                                placeholder="Enter your complete shipping address"></textarea>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>Payment Information</h3>
+                    <p class="payment-note">Payment processing will be implemented in production.</p>
+                </div>
+                
+                <button type="submit" class="btn-primary place-order-btn">
+                    Place Order
+                </button>
+            </form>
+        </div>
+        
+        <div class="order-summary">
+            <h3>Order Summary</h3>
+            {% for item in cart_items %}
+            <div class="order-item">
+                <div class="item-info">
+                    <span>{{ item.product.name }} ({{ item.size }})</span>
+                    <span>x{{ item.quantity }}</span>
+                </div>
+                <div class="item-price">
+                    ${{ item.get_total_price }}
+                </div>
+            </div>
+            {% endfor %}
+            
+            <div class="total-row">
+                <strong>Total: ${{ cart.get_total_price }}</strong>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block title %}Login - T-Shirt Shop{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="auth-form">
+        <h1>Login</h1>
+        {% if form.non_field_errors %}
+            <div class="alert alert-error">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Username:</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <div class="field-error">
+                        {{ form.username.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}">Password:</label>
+                {{ form.password }}
+                {% if form.password.errors %}
+                    <div class="field-error">
+                        {{ form.password.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <button type="submit" class="btn-primary">Login</button>
+            <p style="margin-top: 15px;"><a href="{% url 'password_reset' %}">Forgot your password?</a></p>
+        </form>
+        
+        <div class="auth-links">
+            <p>Don't have an account? <a href="{% url 'shop:signup' %}">Sign up here</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}
