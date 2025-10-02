@@ -58,7 +58,10 @@ class Customer(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        return f"{self.user.first_name} {self.user.last_name}"
+        # Show full name if available, otherwise username
+        if self.user.first_name and self.user.last_name:
+            return f"{self.user.first_name} {self.user.last_name}"
+        return self.user.username
 
 class Order(models.Model):
     STATUS_CHOICES = [
@@ -69,12 +72,29 @@ class Order(models.Model):
         ('cancelled', 'Cancelled'),
     ]
     
+    PAYMENT_STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+        ('refunded', 'Refunded'),
+    ]
+    
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     shipping_address = models.TextField()
+    
+    # Payment fields
+    payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='pending')
+    payment_intent_id = models.CharField(max_length=255, blank=True, null=True)
+    stripe_charge_id = models.CharField(max_length=255, blank=True, null=True)
+    payment_method = models.CharField(max_length=50, default='card')
+    
+    # Shipping fields
+    tracking_number = models.CharField(max_length=255, blank=True, null=True)
+    tracking_url = models.URLField(blank=True, null=True)
     
     class Meta:
         ordering = ['-created_at']

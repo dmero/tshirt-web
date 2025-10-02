@@ -1,0 +1,17 @@
+# Django Framework
+Django==5.2
+
+# Database Driver
+mysqlclient==2.2.0
+
+# Image Processing (for ImageField)
+Pillow==10.0.0
+
+# Payment Processing
+stripe==7.0.0
+
+# Optional: For better .env handling (alternative to custom loader)
+# python-decouple==3.8
+
+# Development Dependencies
+# django-debug-toolbar==4.2.0

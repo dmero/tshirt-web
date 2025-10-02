@@ -1,0 +1,44 @@
+YOUR ORDER HAS BEEN DELIVERED!
+
+Hi {{ order.customer.user.first_name|default:order.customer.user.username }},
+
+Your order has been successfully delivered! We hope you love your new items.
+
+DELIVERY CONFIRMED
+==================
+Delivered on: {{ order.updated_at|date:"F d, Y at h:i A" }}
+
+ORDER DETAILS
+=============
+Order Number: #{{ order.id }}
+Order Date: {{ order.created_at|date:"F d, Y" }}
+
+ITEMS DELIVERED
+===============
+{% for item in order.items.all %}
+- {{ item.product.name }} (Size: {{ item.size }}) - Quantity: {{ item.quantity }}
+{% endfor %}
+
+DELIVERED TO
+============
+{{ order.shipping_address }}
+
+HOW WAS YOUR EXPERIENCE?
+=========================
+We'd love to hear your feedback!
+Visit: {{ site_url }}/my-orders/
+
+NEED HELP?
+==========
+- If you didn't receive your order, please contact us immediately
+- For returns or exchanges, visit our Returns Policy
+- Have questions? Email: {{ support_email }}
+
+Thank you for shopping with us! We hope to serve you again soon.
+
+Best regards,
+T-Shirt Shop Team
+
+---
+This is an automated email. Please do not reply to this message.
+© 2025 T-Shirt Shop. All rights reserved.

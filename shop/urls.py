@@ -12,7 +12,10 @@ urlpatterns = [
     path('cart/update/', views.update_cart_item, name='update_cart_item'),
     path('cart/remove/', views.remove_from_cart, name='remove_from_cart'),
     path('checkout/', views.checkout, name='checkout'),
+    path('process-payment/', views.process_payment, name='process_payment'),
     path('order-success/<int:order_id>/', views.order_success, name='order_success'),
     path('my-orders/', views.my_orders, name='my_orders'),
+    path('order/<int:order_id>/refund/', views.refund_order, name='refund_order'),
     path('signup/', views.signup, name='signup'),
+    path('webhook/stripe/', views.stripe_webhook, name='stripe_webhook'),
 ]

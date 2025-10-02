@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #2196F3;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #ddd;
+        }
+        .refund-details {
+            background-color: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #2196F3;
+        }
+        .alert {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Refund Processed</h1>
+        </div>
+        
+        <div class="content">
+            <p>Hi {{ order.customer.user.first_name|default:order.customer.user.username }},</p>
+            
+            <p>Your refund has been processed successfully.</p>
+            
+            <div class="refund-details">
+                <h2>Refund Details</h2>
+                <p><strong>Order Number:</strong> #{{ order.id }}</p>
+                <p><strong>Original Order Date:</strong> {{ order.created_at|date:"F d, Y" }}</p>
+                <p><strong>Refund Amount:</strong> ${{ order.total_amount }}</p>
+                <p><strong>Payment Status:</strong> Refunded</p>
+            </div>
+            
+            <div class="alert">
+                <strong>⏱ Processing Time:</strong> Please allow 5-10 business days for the refund to appear in your account, depending on your bank or card issuer.
+            </div>
+            
+            <p>The refund will be credited to the original payment method used for this order.</p>
+            
+            <p>If you have any questions or concerns, please contact our customer support.</p>
+            
+            <p>We're sorry to see you return this order, and we hope to serve you better in the future.</p>
+            
+            <p>Best regards,<br>
+            <strong>T-Shirt Shop Team</strong></p>
+        </div>
+        
+        <div class="footer">
+            <p>This is an automated email. Please do not reply to this message.</p>
+            <p>&copy; 2025 T-Shirt Shop. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

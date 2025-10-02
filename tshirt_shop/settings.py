@@ -43,12 +43,15 @@ _load_dotenv()
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-i4=nit94zw&57)w(&19o038p#=l53wlp+q3@a%s9banhl$^)7^"
+SECRET_KEY = os.getenv(
+    'SECRET_KEY', 
+    'django-insecure-i4=nit94zw&57)w(&19o038p#=l53wlp+q3@a%s9banhl$^)7^'
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 'yes')
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
 
 # Application definition
@@ -99,14 +102,14 @@ WSGI_APPLICATION = "tshirt_shop.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "tshirt_shop_db",
-	"USER": "tshirt_user",
-	"PASSWORD": "Hun1ter2###",
-	"HOST": "localhost",
-	"PORT": "3306",
-	"OPTIONS": {
+        "NAME": os.getenv("DB_NAME", "tshirt_shop_db"),
+        "USER": os.getenv("DB_USER", "tshirt_user"),
+        "PASSWORD": os.getenv("DB_PASSWORD", ""),
+        "HOST": os.getenv("DB_HOST", "localhost"),
+        "PORT": os.getenv("DB_PORT", "3306"),
+        "OPTIONS": {
             "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
-	},
+        },
     }
 }
 
@@ -183,3 +186,8 @@ EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True').lower() in ('true', '1', 'yes
 EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'False').lower() in ('true', '1', 'yes')
 EMAIL_TIMEOUT = int(os.getenv('EMAIL_TIMEOUT', '10'))
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER or 'webmaster@localhost')
+
+# Stripe Payment Settings
+STRIPE_PUBLIC_KEY = os.getenv('STRIPE_PUBLIC_KEY', '')
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY', '')
+STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET', '')

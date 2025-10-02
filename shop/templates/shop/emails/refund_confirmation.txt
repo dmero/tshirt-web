@@ -1,0 +1,29 @@
+REFUND PROCESSED
+
+Hi {{ order.customer.user.first_name|default:order.customer.user.username }},
+
+Your refund has been processed successfully.
+
+REFUND DETAILS
+==============
+Order Number: #{{ order.id }}
+Original Order Date: {{ order.created_at|date:"F d, Y" }}
+Refund Amount: ${{ order.total_amount }}
+Payment Status: Refunded
+
+PROCESSING TIME
+===============
+Please allow 5-10 business days for the refund to appear in your account, depending on your bank or card issuer.
+
+The refund will be credited to the original payment method used for this order.
+
+If you have any questions or concerns, please contact our customer support.
+
+We're sorry to see you return this order, and we hope to serve you better in the future.
+
+Best regards,
+T-Shirt Shop Team
+
+---
+This is an automated email. Please do not reply to this message.
+© 2025 T-Shirt Shop. All rights reserved.

@@ -1,0 +1,37 @@
+ORDER CONFIRMED!
+
+Hi {{ order.customer.user.first_name|default:order.customer.user.username }},
+
+Thank you for your order! We've received your payment and are processing your order.
+
+ORDER DETAILS
+=============
+Order Number: #{{ order.id }}
+Order Date: {{ order.created_at|date:"F d, Y at h:i A" }}
+Payment Status: {{ order.get_payment_status_display }}
+
+ITEMS ORDERED
+=============
+{% for item in order.items.all %}
+- {{ item.product.name }} (Size: {{ item.size }})
+  Quantity: {{ item.quantity }} × ${{ item.price }} = ${{ item.get_total_price }}
+{% endfor %}
+
+Total Amount: ${{ order.total_amount }}
+
+SHIPPING ADDRESS
+================
+{{ order.shipping_address }}
+
+You can track your order status by visiting: {{ site_url }}/my-orders/
+
+If you have any questions, please don't hesitate to contact us.
+
+Thank you for shopping with us!
+
+Best regards,
+T-Shirt Shop Team
+
+---
+This is an automated email. Please do not reply to this message.
+© 2025 T-Shirt Shop. All rights reserved.

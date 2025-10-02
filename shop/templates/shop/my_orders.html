@@ -45,6 +45,33 @@
                     {% endfor %}
                 </div>
                 
+                {% if order.status == 'shipped' or order.status == 'delivered' %}
+                    {% if order.tracking_number %}
+                    <div class="tracking-info">
+                        <h4>📦 Tracking Information</h4>
+                        <div class="tracking-details">
+                            <p><strong>Tracking Number:</strong> 
+                                <span class="tracking-number">{{ order.tracking_number }}</span>
+                            </p>
+                            {% if order.tracking_url %}
+                            <a href="{{ order.tracking_url }}" target="_blank" class="btn-track">
+                                Track Package
+                            </a>
+                            {% endif %}
+                            {% if order.status == 'shipped' %}
+                            <p class="delivery-estimate">
+                                <i class="fas fa-clock"></i> Expected delivery: 3-5 business days
+                            </p>
+                            {% elif order.status == 'delivered' %}
+                            <p class="delivery-complete">
+                                <i class="fas fa-check-circle"></i> Delivered on {{ order.updated_at|date:"F d, Y" }}
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endif %}
+                
                 {% if order.shipping_address %}
                 <div class="shipping-address">
                     <h4>Shipping Address:</h4>

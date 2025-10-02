@@ -1,0 +1,45 @@
+YOUR ORDER HAS SHIPPED!
+
+Hi {{ order.customer.user.first_name|default:order.customer.user.username }},
+
+Great news! Your order has been shipped and is on its way to you.
+
+{% if tracking_number %}
+TRACK YOUR PACKAGE
+===================
+Tracking Number: {{ tracking_number }}
+{% if tracking_url %}
+Track at: {{ tracking_url }}
+{% endif %}
+{% endif %}
+
+ORDER DETAILS
+=============
+Order Number: #{{ order.id }}
+Order Date: {{ order.created_at|date:"F d, Y" }}
+Shipped Date: {{ order.updated_at|date:"F d, Y" }}
+
+ITEMS SHIPPED
+=============
+{% for item in order.items.all %}
+- {{ item.product.name }} (Size: {{ item.size }}) - Quantity: {{ item.quantity }}
+{% endfor %}
+
+SHIPPING ADDRESS
+================
+{{ order.shipping_address }}
+
+Expected Delivery: 3-5 business days
+
+You can track your order status by visiting: {{ site_url }}/my-orders/
+
+If you have any questions about your shipment, please don't hesitate to contact us.
+
+Thank you for your order!
+
+Best regards,
+T-Shirt Shop Team
+
+---
+This is an automated email. Please do not reply to this message.
+© 2025 T-Shirt Shop. All rights reserved.

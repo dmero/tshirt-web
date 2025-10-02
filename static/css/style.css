@@ -1527,6 +1527,82 @@ button:focus {
     line-height: 1.5;
 }
 
+.tracking-info {
+    padding: 20px 30px;
+    background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+    border-top: 1px solid #ff9800;
+    border-left: 4px solid #ff9800;
+}
+
+.tracking-info h4 {
+    margin: 0 0 15px 0;
+    color: #e65100;
+    font-size: 1.1rem;
+}
+
+.tracking-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tracking-details p {
+    margin: 0;
+    color: #333;
+}
+
+.tracking-number {
+    font-family: 'Courier New', monospace;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #ff6f00;
+    background: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.btn-track {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #ff9800;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-align: center;
+    max-width: 200px;
+}
+
+.btn-track:hover {
+    background: #f57c00;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 152, 0, 0.3);
+}
+
+.delivery-estimate {
+    color: #ff6f00;
+    font-size: 0.9rem;
+    margin-top: 5px !important;
+}
+
+.delivery-estimate i {
+    margin-right: 5px;
+}
+
+.delivery-complete {
+    color: #2e7d32;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-top: 5px !important;
+}
+
+.delivery-complete i {
+    margin-right: 5px;
+    color: #4caf50;
+}
+
 .empty-orders {
     text-align: center;
     padding: 80px 20px;
