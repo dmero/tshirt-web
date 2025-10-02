@@ -193,9 +193,11 @@ EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
 EMAIL_USE_TLS=True
 EMAIL_HOST_USER=your-email@gmail.com
-EMAIL_HOST_PASSWORD=your-app-password-here
+EMAIL_HOST_PASSWORD=your-16-char-app-password
 DEFAULT_FROM_EMAIL=your-email@gmail.com
 ```
+
+**⚠️ IMPORTANT:** Replace `your-email@gmail.com` and `your-16-char-app-password` with your actual credentials in your **local `.env` file only**. Never commit real credentials to Git!
 
 ### Using Gmail
 
