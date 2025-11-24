@@ -4,72 +4,141 @@
 {% block title %}Shopping Cart - T-Shirt Shop{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Shopping Cart</h1>
-    
-    {% if cart_items %}
-        <div class="cart-page">
-            <div class="cart-items-list">
-                {% for item in cart_items %}
-                <div class="cart-item" data-item-id="{{ item.id }}">
-                    <div class="item-image">
-                        {% if item.product.image %}
-                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
-                        {% else %}
-                            <img src="{% static 'images/placeholder.jpg' %}" alt="{{ item.product.name }}">
-                        {% endif %}
-                    </div>
-                    
-                    <div class="item-details">
-                        <h3>{{ item.product.name }}</h3>
-                        <p>Size: {{ item.size }}</p>
-                        <p class="item-price">${{ item.product.price }}</p>
-                    </div>
-                    
-                    <div class="quantity-controls">
-                        <button onclick="updateCartItemQuantity({{ item.id }}, {{ item.quantity }} - 1)">-</button>
-                        <span class="quantity">{{ item.quantity }}</span>
-                        <button onclick="updateCartItemQuantity({{ item.id }}, {{ item.quantity }} + 1)">+</button>
-                    </div>
-                    
-                    <div class="item-total">
-                        <strong>${{ item.get_total_price }}</strong>
-                    </div>
-                    
-                    <button class="remove-item" onclick="removeCartItem({{ item.id }})">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-                {% endfor %}
+<div class="cart-page-wrapper">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="cart-header">
+            <div class="cart-header-icon">
+                <i class="fas fa-shopping-cart"></i>
             </div>
-            
-            <div class="cart-summary">
-                <h3>Order Summary</h3>
-                <div class="summary-row">
-                    <span>Subtotal:</span>
-                    <span>${{ cart.get_total_price }}</span>
-                </div>
-                <div class="summary-row">
-                    <span>Shipping:</span>
-                    <span>Free</span>
-                </div>
-                <div class="summary-row total">
-                    <span>Total:</span>
-                    <span>${{ cart.get_total_price }}</span>
+            <h1>Shopping Cart</h1>
+            <p class="cart-subtitle">Review your items before checkout</p>
+        </div>
+        
+        {% if cart_items %}
+            <div class="cart-container">
+                <!-- Cart Items Section -->
+                <div class="cart-items-section">
+                    {% for item in cart_items %}
+                    <div class="modern-cart-item" data-item-id="{{ item.id }}">
+                        <!-- Product Image -->
+                        <div class="cart-item-image">
+                            {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                            {% else %}
+                                <img src="{% static 'images/placeholder.jpg' %}" alt="{{ item.product.name }}">
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Product Info -->
+                        <div class="cart-item-info">
+                            <h3 class="product-name">{{ item.product.name }}</h3>
+                            <div class="product-meta">
+                                <span class="size-badge">
+                                    <i class="fas fa-ruler"></i>
+                                    Size: {{ item.size }}
+                                </span>
+                                <span class="unit-price">
+                                    ${{ item.product.price }} each
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Quantity Controls -->
+                        <div class="cart-quantity-section">
+                            <label>Quantity</label>
+                            <div class="modern-qty-controls">
+                                <button class="qty-btn" onclick="updateCartItemQuantity({{ item.id }}, {{ item.quantity }} - 1)">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <span class="qty-display">{{ item.quantity }}</span>
+                                <button class="qty-btn" onclick="updateCartItemQuantity({{ item.id }}, {{ item.quantity }} + 1)">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Item Total -->
+                        <div class="cart-item-total">
+                            <label>Total</label>
+                            <span class="total-price">${{ item.get_total_price }}</span>
+                        </div>
+                        
+                        <!-- Remove Button -->
+                        <button class="modern-remove-btn" onclick="removeCartItem({{ item.id }})" title="Remove item">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                    {% endfor %}
                 </div>
                 
-                <a href="{% url 'shop:checkout' %}" class="btn-primary checkout-btn">
-                    Proceed to Checkout
+                <!-- Cart Summary Section -->
+                <div class="cart-summary-section">
+                    <div class="modern-cart-summary">
+                        <!-- Summary Header -->
+                        <div class="summary-header">
+                            <i class="fas fa-receipt"></i>
+                            <h3>Order Summary</h3>
+                        </div>
+                        
+                        <!-- Summary Details -->
+                        <div class="summary-body">
+                            <div class="summary-row">
+                                <span class="label">Items ({{ cart_items.count }})</span>
+                                <span class="value">${{ cart.get_total_price }}</span>
+                            </div>
+                            <div class="summary-row">
+                                <span class="label">Shipping</span>
+                                <span class="value free">Free</span>
+                            </div>
+                            <div class="summary-divider"></div>
+                            <div class="summary-row total-row">
+                                <span class="label">Total</span>
+                                <span class="value total-value">${{ cart.get_total_price }}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Checkout Button -->
+                        <a href="{% url 'shop:checkout' %}" class="modern-checkout-btn">
+                            <i class="fas fa-lock"></i>
+                            Proceed to Checkout
+                        </a>
+                        
+                        <!-- Continue Shopping Link -->
+                        <a href="{% url 'shop:index' %}" class="continue-shopping">
+                            <i class="fas fa-arrow-left"></i>
+                            Continue Shopping
+                        </a>
+                        
+                        <!-- Trust Badges -->
+                        <div class="cart-trust-badges">
+                            <div class="trust-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Secure Payment</span>
+                            </div>
+                            <div class="trust-item">
+                                <i class="fas fa-truck"></i>
+                                <span>Free Shipping</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <!-- Empty Cart State -->
+            <div class="modern-empty-cart">
+                <div class="empty-cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <h2>Your Cart is Empty</h2>
+                <p>Looks like you haven't added any items to your cart yet.</p>
+                <a href="{% url 'shop:index' %}" class="browse-products-btn">
+                    <i class="fas fa-tshirt"></i>
+                    Browse Products
                 </a>
             </div>
-        </div>
-    {% else %}
-        <div class="empty-cart-page">
-            <i class="fas fa-shopping-cart"></i>
-            <h2>Your cart is empty</h2>
-            <p>Start shopping to add items to your cart</p>
-            <a href="{% url 'shop:index' %}" class="btn-primary">Continue Shopping</a>
-        </div>
-    {% endif %}
+        {% endif %}
+    </div>
 </div>
+
 {% endblock %}

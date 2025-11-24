@@ -80,20 +80,22 @@ mark_as_delivered.short_description = "Mark as Delivered (Send Email)"
 class OrderAdmin(admin.ModelAdmin):
     list_display = ['id', 'customer_name', 'status', 'payment_status', 'tracking_number', 'total_amount', 'created_at']
     list_filter = ['status', 'payment_status', 'created_at']
-    readonly_fields = ['payment_intent_id', 'stripe_charge_id', 'created_at', 'updated_at']
+    readonly_fields = ['payment_intent_id', 'stripe_charge_id', 'order_lookup_token', 'created_at', 'updated_at']
     inlines = [OrderItemInline]
     actions = [mark_as_shipped, mark_as_delivered, refund_order_action]
-    search_fields = ['id', 'customer__user__username', 'customer__user__email', 'tracking_number']
+    search_fields = ['id', 'customer__user__username', 'customer__user__email', 'customer__guest_email', 'guest_email', 'tracking_number']
     
     def customer_name(self, obj):
-        """Display customer username in the list"""
-        return obj.customer.user.username
+        """Display customer username or guest email in the list"""
+        if obj.customer.user:
+            return obj.customer.user.username
+        return f"Guest ({obj.customer.guest_email or obj.guest_email})"
     customer_name.short_description = 'Customer'
     customer_name.admin_order_field = 'customer__user__username'
     
     fieldsets = (
         ('Order Information', {
-            'fields': ('customer', 'status', 'total_amount', 'shipping_address')
+            'fields': ('customer', 'guest_email', 'status', 'total_amount', 'shipping_address')
         }),
         ('Shipping Details', {
             'fields': ('tracking_number', 'tracking_url'),
@@ -101,6 +103,11 @@ class OrderAdmin(admin.ModelAdmin):
         }),
         ('Payment Details', {
             'fields': ('payment_status', 'payment_method', 'payment_intent_id', 'stripe_charge_id')
+        }),
+        ('Guest Order Tracking', {
+            'fields': ('order_lookup_token',),
+            'classes': ('collapse',),
+            'description': 'Unique token for guest order tracking'
         }),
         ('Timestamps', {
             'fields': ('created_at', 'updated_at')
@@ -121,12 +128,23 @@ class CustomerOrderInline(admin.TabularInline):
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    list_display = ['user', 'phone', 'city', 'created_at']
+    list_display = ['customer_identifier', 'phone', 'city', 'created_at']
+    list_filter = ['created_at']
+    search_fields = ['user__username', 'user__email', 'guest_email']
     inlines = [CustomerOrderInline]
+    
+    def customer_identifier(self, obj):
+        """Display username or guest email"""
+        if obj.user:
+            return f"{obj.user.username} (User)"
+        return f"{obj.guest_email} (Guest)"
+    customer_identifier.short_description = 'Customer'
+    customer_identifier.admin_order_field = 'user__username'
     
     fieldsets = (
         ('User Information', {
-            'fields': ('user',)
+            'fields': ('user', 'guest_email'),
+            'description': 'Either user or guest_email should be filled (not both)'
         }),
         ('Contact Information', {
             'fields': ('phone', 'address', 'city', 'postal_code', 'country')

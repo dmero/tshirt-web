@@ -15,6 +15,7 @@ urlpatterns = [
     path('process-payment/', views.process_payment, name='process_payment'),
     path('order-success/<int:order_id>/', views.order_success, name='order_success'),
     path('my-orders/', views.my_orders, name='my_orders'),
+    path('guest-order-lookup/', views.guest_order_lookup, name='guest_order_lookup'),
     path('order/<int:order_id>/refund/', views.refund_order, name='refund_order'),
     path('signup/', views.signup, name='signup'),
     path('webhook/stripe/', views.stripe_webhook, name='stripe_webhook'),

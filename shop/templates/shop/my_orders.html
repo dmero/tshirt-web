@@ -4,90 +4,171 @@
 {% block title %}My Orders - T-Shirt Shop{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>My Orders</h1>
-    
-    {% if orders %}
-        <div class="orders-list">
-            {% for order in orders %}
-            <div class="order-card">
-                <div class="order-header">
-                    <div class="order-info">
-                        <h3>Order #{{ order.id }}</h3>
-                        <p class="order-date">{{ order.created_at|date:"F d, Y" }}</p>
-                        <span class="order-status status-{{ order.status }}" style="display: inline-block;">{{ order.get_status_display }}</span>
+<div class="my-orders-page">
+    <div class="container">
+        <div class="page-header">
+            <h1>My Orders</h1>
+            <p class="page-subtitle">Track and manage your orders</p>
+        </div>
+        
+        {% if orders %}
+            <div class="orders-list">
+                {% for order in orders %}
+                <div class="modern-order-card">
+                    <!-- Order Header with Status Badge -->
+                    <div class="modern-order-header">
+                        <div class="order-number-badge">
+                            <i class="fas fa-receipt"></i>
+                            <div>
+                                <span class="badge-label">Order</span>
+                                <span class="badge-number">#{{ order.id }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="order-meta">
+                            <p class="order-date">
+                                <i class="far fa-calendar"></i>
+                                {{ order.created_at|date:"F d, Y" }}
+                            </p>
+                            <span class="status-badge status-{{ order.status }}">
+                                {% if order.status == 'pending' %}
+                                    <i class="fas fa-clock"></i>
+                                {% elif order.status == 'processing' %}
+                                    <i class="fas fa-cog fa-spin"></i>
+                                {% elif order.status == 'shipped' %}
+                                    <i class="fas fa-shipping-fast"></i>
+                                {% elif order.status == 'delivered' %}
+                                    <i class="fas fa-check-circle"></i>
+                                {% elif order.status == 'cancelled' %}
+                                    <i class="fas fa-times-circle"></i>
+                                {% endif %}
+                                {{ order.get_status_display }}
+                            </span>
+                        </div>
+                        
+                        <div class="order-total-badge">
+                            <span class="total-label">Total</span>
+                            <span class="total-amount">${{ order.total_amount }}</span>
+                        </div>
                     </div>
-                    <div class="order-total">
-                        <strong>${{ order.total_amount }}</strong>
+                    
+                    <!-- Order Status Timeline -->
+                    <div class="order-timeline">
+                        <div class="timeline-step {% if order.status in 'pending,processing,shipped,delivered' %}completed{% endif %}">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-label">Placed</div>
+                        </div>
+                        <div class="timeline-line {% if order.status in 'processing,shipped,delivered' %}completed{% endif %}"></div>
+                        <div class="timeline-step {% if order.status in 'processing,shipped,delivered' %}completed{% endif %} {% if order.status == 'processing' %}active{% endif %}">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-label">Processing</div>
+                        </div>
+                        <div class="timeline-line {% if order.status in 'shipped,delivered' %}completed{% endif %}"></div>
+                        <div class="timeline-step {% if order.status in 'shipped,delivered' %}completed{% endif %} {% if order.status == 'shipped' %}active{% endif %}">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-label">Shipped</div>
+                        </div>
+                        <div class="timeline-line {% if order.status == 'delivered' %}completed{% endif %}"></div>
+                        <div class="timeline-step {% if order.status == 'delivered' %}completed active{% endif %}">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-label">Delivered</div>
+                        </div>
                     </div>
-                </div>
                 
-                <div class="order-items">
-                    {% for item in order.items.all %}
-                    <div class="order-item">
-                        <div class="item-image">
-                            {% if item.product.image %}
-                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
-                            {% else %}
-                                <img src="{% static 'images/placeholder.jpg' %}" alt="{{ item.product.name }}">
-                            {% endif %}
+                    <!-- Order Items Grid -->
+                    <div class="modern-order-items">
+                        {% for item in order.items.all %}
+                        <div class="modern-order-item">
+                            <div class="item-image-wrapper">
+                                {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                                {% else %}
+                                    <img src="{% static 'images/placeholder.jpg' %}" alt="{{ item.product.name }}">
+                                {% endif %}
+                            </div>
+                            <div class="item-info">
+                                <h4 class="item-name">{{ item.product.name }}</h4>
+                                <div class="item-specs">
+                                    <span class="spec-badge">
+                                        <i class="fas fa-ruler"></i> Size: {{ item.size }}
+                                    </span>
+                                    <span class="spec-badge">
+                                        <i class="fas fa-boxes"></i> Qty: {{ item.quantity }}
+                                    </span>
+                                </div>
+                                <p class="item-unit-price">${{ item.price }} each</p>
+                            </div>
+                            <div class="item-price-badge">
+                                <span class="price-label">Subtotal</span>
+                                <span class="price-value">${{ item.get_total_price }}</span>
+                            </div>
                         </div>
-                        <div class="item-details">
-                            <h4>{{ item.product.name }}</h4>
-                            <p>Size: {{ item.size }}</p>
-                            <p>Quantity: {{ item.quantity }}</p>
-                            <p class="item-price">${{ item.price }} each</p>
-                        </div>
-                        <div class="item-total">
-                            <strong>${{ item.get_total_price }}</strong>
-                        </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
-                </div>
                 
-                {% if order.status == 'shipped' or order.status == 'delivered' %}
-                    {% if order.tracking_number %}
-                    <div class="tracking-info">
-                        <h4>📦 Tracking Information</h4>
-                        <div class="tracking-details">
-                            <p><strong>Tracking Number:</strong> 
-                                <span class="tracking-number">{{ order.tracking_number }}</span>
-                            </p>
-                            {% if order.tracking_url %}
-                            <a href="{{ order.tracking_url }}" target="_blank" class="btn-track">
-                                Track Package
-                            </a>
-                            {% endif %}
-                            {% if order.status == 'shipped' %}
-                            <p class="delivery-estimate">
-                                <i class="fas fa-clock"></i> Expected delivery: 3-5 business days
-                            </p>
-                            {% elif order.status == 'delivered' %}
-                            <p class="delivery-complete">
-                                <i class="fas fa-check-circle"></i> Delivered on {{ order.updated_at|date:"F d, Y" }}
-                            </p>
-                            {% endif %}
+                    <!-- Tracking Information (if shipped/delivered) -->
+                    {% if order.status == 'shipped' or order.status == 'delivered' %}
+                        {% if order.tracking_number %}
+                        <div class="modern-tracking-section">
+                            <div class="tracking-header">
+                                <i class="fas fa-box"></i>
+                                <h4>Package Tracking</h4>
+                            </div>
+                            <div class="tracking-content">
+                                <div class="tracking-number-display">
+                                    <span class="tracking-label">Tracking Number</span>
+                                    <span class="tracking-code">{{ order.tracking_number }}</span>
+                                </div>
+                                {% if order.tracking_url %}
+                                <a href="{{ order.tracking_url }}" target="_blank" class="tracking-button">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    Track Your Package
+                                </a>
+                                {% endif %}
+                                {% if order.status == 'shipped' %}
+                                <div class="delivery-info shipping">
+                                    <i class="fas fa-truck"></i>
+                                    <span>En route • Expected in 3-5 business days</span>
+                                </div>
+                                {% elif order.status == 'delivered' %}
+                                <div class="delivery-info delivered">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Delivered on {{ order.updated_at|date:"F d, Y" }}</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endif %}
+                    
+                    <!-- Shipping Address -->
+                    {% if order.shipping_address %}
+                    <div class="modern-shipping-address">
+                        <div class="address-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="address-content">
+                            <h4>Delivery Address</h4>
+                            <p>{{ order.shipping_address }}</p>
                         </div>
                     </div>
                     {% endif %}
-                {% endif %}
-                
-                {% if order.shipping_address %}
-                <div class="shipping-address">
-                    <h4>Shipping Address:</h4>
-                    <p>{{ order.shipping_address }}</p>
                 </div>
-                {% endif %}
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div class="empty-orders">
-            <i class="fas fa-shopping-bag"></i>
-            <h2>No orders yet</h2>
-            <p>You haven't placed any orders yet. Start shopping to see your orders here!</p>
-            <a href="{% url 'shop:index' %}" class="btn-primary">Start Shopping</a>
-        </div>
-    {% endif %}
+        {% else %}
+            <div class="modern-empty-orders">
+                <div class="empty-icon">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+                <h2>No Orders Yet</h2>
+                <p>Start your shopping journey! Browse our collection of premium t-shirts and place your first order.</p>
+                <a href="{% url 'shop:index' %}" class="btn-primary">
+                    <i class="fas fa-shopping-cart"></i>
+                    Start Shopping
+                </a>
+            </div>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

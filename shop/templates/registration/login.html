@@ -4,44 +4,361 @@
 {% block title %}Login - T-Shirt Shop{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="auth-form">
-        <h1>Login</h1>
-        {% if form.non_field_errors %}
-            <div class="alert alert-error">
-                {% for error in form.non_field_errors %}
-                    <p>{{ error }}</p>
-                {% endfor %}
-            </div>
-        {% endif %}
-        <form method="post">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="{{ form.username.id_for_label }}">Username:</label>
-                {{ form.username }}
-                {% if form.username.errors %}
-                    <div class="field-error">
-                        {{ form.username.errors.0 }}
-                    </div>
-                {% endif %}
-            </div>
-            <div class="form-group">
-                <label for="{{ form.password.id_for_label }}">Password:</label>
-                {{ form.password }}
-                {% if form.password.errors %}
-                    <div class="field-error">
-                        {{ form.password.errors.0 }}
-                    </div>
-                {% endif %}
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <!-- Header -->
+            <div class="auth-header">
+                <div class="auth-icon">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <h1>Welcome Back</h1>
+                <p class="auth-subtitle">Sign in to your account</p>
             </div>
             
-            <button type="submit" class="btn-primary">Login</button>
-            <p style="margin-top: 15px;"><a href="{% url 'password_reset' %}">Forgot your password?</a></p>
-        </form>
-        
-        <div class="auth-links">
-            <p>Don't have an account? <a href="{% url 'shop:signup' %}">Sign up here</a></p>
+            <!-- Error Messages -->
+            {% if form.non_field_errors %}
+                <div class="alert alert-error">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <!-- Login Form -->
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                
+                <!-- Username Field -->
+                <div class="modern-form-group">
+                    <label for="{{ form.username.id_for_label }}" class="modern-label">
+                        <i class="fas fa-user"></i>
+                        Username
+                    </label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        {{ form.username }}
+                    </div>
+                    {% if form.username.errors %}
+                        <div class="field-error">
+                            <i class="fas fa-exclamation-circle"></i>
+                            {{ form.username.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Password Field -->
+                <div class="modern-form-group">
+                    <label for="{{ form.password.id_for_label }}" class="modern-label">
+                        <i class="fas fa-lock"></i>
+                        Password
+                    </label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        {{ form.password }}
+                    </div>
+                    {% if form.password.errors %}
+                        <div class="field-error">
+                            <i class="fas fa-exclamation-circle"></i>
+                            {{ form.password.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Forgot Password Link -->
+                <div class="form-footer">
+                    <a href="{% url 'password_reset' %}" class="forgot-password">
+                        <i class="fas fa-key"></i>
+                        Forgot your password?
+                    </a>
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="auth-submit-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </button>
+            </form>
+            
+            <!-- Sign Up Link -->
+            <div class="auth-footer">
+                <p>Don't have an account? 
+                    <a href="{% url 'shop:signup' %}" class="auth-link">
+                        Sign up here
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </p>
+            </div>
         </div>
     </div>
 </div>
+
+<style>
+/* Modern Auth Page Styles */
+.auth-page {
+    min-height: calc(100vh - 80px);
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    padding: 3rem 2.5rem;
+    animation: fadeInUp 0.6s ease;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.auth-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, #2D3561 0%, #1A1A2E 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(45, 53, 97, 0.3);
+}
+
+.auth-icon i {
+    font-size: 2.5rem;
+    color: white;
+}
+
+.auth-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: #1A1A2E;
+    margin-bottom: 0.5rem;
+}
+
+.auth-subtitle {
+    color: #6c757d;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Modern Form Groups */
+.modern-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.modern-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: #2D3561;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.modern-label i {
+    font-size: 0.9rem;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9E9E9E;
+    font-size: 1rem;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.auth-form input[type="text"],
+.auth-form input[type="password"] {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    border: 2px solid #E8E8E8;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+    background: #F8F9FA;
+}
+
+.auth-form input[type="text"]:focus,
+.auth-form input[type="password"]:focus {
+    outline: none;
+    border-color: #2D3561;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(45, 53, 97, 0.1);
+}
+
+.auth-form input[type="text"]::placeholder,
+.auth-form input[type="password"]::placeholder {
+    color: #9E9E9E;
+}
+
+/* Error Messages */
+.field-error {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: #f8d7da;
+    border-radius: 8px;
+    border-left: 3px solid #dc3545;
+}
+
+.field-error i {
+    font-size: 0.875rem;
+}
+
+.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid #dc3545;
+}
+
+.alert-error p {
+    margin: 0;
+}
+
+/* Form Footer */
+.form-footer {
+    text-align: right;
+    margin-bottom: 1.5rem;
+}
+
+.forgot-password {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #2D3561;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.forgot-password:hover {
+    color: #C05746;
+    gap: 0.75rem;
+}
+
+.forgot-password i {
+    font-size: 0.85rem;
+}
+
+/* Submit Button */
+.auth-submit-btn {
+    width: 100%;
+    padding: 1.125rem 2rem;
+    background: linear-gradient(135deg, #C05746 0%, #F4A259 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    box-shadow: 0 4px 16px rgba(192, 87, 70, 0.3);
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.auth-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(192, 87, 70, 0.4);
+}
+
+.auth-submit-btn:active {
+    transform: translateY(0);
+}
+
+.auth-submit-btn i {
+    font-size: 1.1rem;
+}
+
+/* Auth Footer */
+.auth-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #E8E8E8;
+}
+
+.auth-footer p {
+    color: #6c757d;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.auth-link {
+    color: #2D3561;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.auth-link:hover {
+    color: #C05746;
+    gap: 0.75rem;
+}
+
+.auth-link i {
+    font-size: 0.85rem;
+}
+
+/* Responsive Design */
+@media (max-width: 576px) {
+    .auth-card {
+        padding: 2rem 1.5rem;
+    }
+    
+    .auth-header h1 {
+        font-size: 1.75rem;
+    }
+    
+    .auth-icon {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .auth-icon i {
+        font-size: 2rem;
+    }
+}
+</style>
 {% endblock %}

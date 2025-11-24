@@ -15,18 +15,63 @@ function toggleCart() {
     const cartOverlay = document.getElementById('cart-overlay');
     
     if (!cartOpen) {
-        cartSidebar.classList.add('open');
+        cartSidebar.classList.add('active');
         cartOverlay.classList.add('active');
         document.body.style.overflow = 'hidden';
         cartOpen = true;
         loadCartItems(); // Refresh cart items when opening
     } else {
-        cartSidebar.classList.remove('open');
+        cartSidebar.classList.remove('active');
         cartOverlay.classList.remove('active');
         document.body.style.overflow = 'auto';
         cartOpen = false;
     }
 }
+
+// Toggle mobile menu
+function toggleMenu() {
+    const navMenu = document.querySelector('.nav-menu');
+    const menuToggle = document.querySelector('.menu-toggle');
+    const mobileOverlay = document.getElementById('mobile-menu-overlay');
+    const body = document.body;
+    
+    navMenu.classList.toggle('active');
+    menuToggle.classList.toggle('active');
+    
+    if (mobileOverlay) {
+        mobileOverlay.classList.toggle('active');
+    }
+    
+    // Prevent body scroll when menu is open on mobile
+    if (navMenu.classList.contains('active')) {
+        body.style.overflow = 'hidden';
+    } else {
+        body.style.overflow = 'auto';
+    }
+}
+
+// Close mobile menu when clicking outside
+document.addEventListener('click', function(event) {
+    const navMenu = document.querySelector('.nav-menu');
+    const menuToggle = document.querySelector('.menu-toggle');
+    
+    if (navMenu && menuToggle) {
+        const isClickInsideMenu = navMenu.contains(event.target);
+        const isClickOnToggle = menuToggle.contains(event.target);
+        
+        if (!isClickInsideMenu && !isClickOnToggle && navMenu.classList.contains('active')) {
+            toggleMenu();
+        }
+    }
+});
+
+// Close mobile menu when clicking on overlay
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileOverlay = document.getElementById('mobile-menu-overlay');
+    if (mobileOverlay) {
+        mobileOverlay.addEventListener('click', toggleMenu);
+    }
+});
 
 // Update cart count in navigation
 function updateCartCount() {
@@ -76,22 +121,30 @@ function loadCartItems() {
                 
                 data.items.forEach(item => {
                     cartHTML += `
-                        <div class="sidebar-cart-item" data-item-id="${item.id}" style="display: flex; flex-direction: row; align-items: center;">
-                            <div class="sidebar-item-image" style="flex-shrink: 0;">
+                        <div class="modern-sidebar-item" data-item-id="${item.id}">
+                            <div class="sidebar-item-image">
                                 <img src="${item.product_image || '/static/images/placeholder.jpg'}" 
-                                     alt="${item.product_name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;">
+                                     alt="${item.product_name}">
                             </div>
-                            <div class="sidebar-item-info" style="flex: 1; margin-left: 10px;">
-                                <h4 style="margin: 0; font-size: 0.85rem; color: #333;">${item.product_name}</h4>
-                                <p style="margin: 2px 0; font-size: 0.75rem; color: #666;">Size: ${item.size}</p>
-                                <p class="sidebar-item-price" style="margin: 2px 0; font-weight: bold; color: #007bff; font-size: 0.8rem;">$${item.price.toFixed(2)}</p>
+                            <div class="sidebar-item-details">
+                                <h4 class="sidebar-item-name">${item.product_name}</h4>
+                                <span class="sidebar-item-size">
+                                    <i class="fas fa-ruler"></i> ${item.size}
+                                </span>
+                                <span class="sidebar-item-price">$${item.price.toFixed(2)}</span>
                             </div>
-                            <div class="sidebar-item-controls" style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
-                                <button class="quantity-btn" onclick="updateCartQuantity(${item.id}, ${item.quantity - 1})" style="width: 22px; height: 22px; border: 1px solid #ddd; background: #f8f9fa; border-radius: 3px; cursor: pointer;">-</button>
-                                <span class="quantity" style="font-size: 0.8rem; font-weight: bold; min-width: 16px; text-align: center;">${item.quantity}</span>
-                                <button class="quantity-btn" onclick="updateCartQuantity(${item.id}, ${item.quantity + 1})" style="width: 22px; height: 22px; border: 1px solid #ddd; background: #f8f9fa; border-radius: 3px; cursor: pointer;">+</button>
-                                <button class="remove-btn" onclick="removeFromCartSidebar(${item.id})" style="width: 22px; height: 22px; border: none; background: #dc3545; color: white; border-radius: 3px; cursor: pointer; margin-left: 4px;">
-                                    <i class="fas fa-trash" style="font-size: 0.65rem;"></i>
+                            <div class="sidebar-item-actions">
+                                <div class="sidebar-qty-controls">
+                                    <button class="sidebar-qty-btn" onclick="updateCartQuantity(${item.id}, ${item.quantity - 1})">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <span class="sidebar-qty">${item.quantity}</span>
+                                    <button class="sidebar-qty-btn" onclick="updateCartQuantity(${item.id}, ${item.quantity + 1})">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                                <button class="sidebar-remove-btn" onclick="removeFromCartSidebar(${item.id})" title="Remove">
+                                    <i class="fas fa-trash-alt"></i>
                                 </button>
                             </div>
                         </div>
@@ -339,10 +392,22 @@ function addToCart(event) {
             updateCartCount();
             loadCartItems(); // Refresh cart sidebar
             
+            // Auto-open cart sidebar to show the added item
+            setTimeout(() => {
+                toggleCart();
+            }, 500);
+            
             // Reset form
             form.reset();
-            form.querySelector('select[name="size"]').selectedIndex = 0;
+            const sizeSelect = form.querySelector('select[name="size"]');
+            const hiddenSize = form.querySelector('input[name="size"][type="hidden"]');
+            if (sizeSelect) sizeSelect.selectedIndex = 0;
+            if (hiddenSize) hiddenSize.value = '';
             form.querySelector('input[name="quantity"]').value = 1;
+            
+            // Reset size button selection if using button-based size selector
+            const sizeButtons = form.querySelectorAll('.size-btn');
+            sizeButtons.forEach(btn => btn.classList.remove('selected'));
             
         } else {
             showNotification(data.message, 'error');

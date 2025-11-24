@@ -4,68 +4,139 @@
 {% block title %}{{ product.name }} - T-Shirt Shop{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="product-detail">
-        <div class="product-images">
-            {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="main-image">
-            {% else %}
-                <img src="{% static 'images/placeholder.jpg' %}" alt="{{ product.name }}" class="main-image">
-            {% endif %}
-        </div>
+<div class="product-detail-page">
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav class="modern-breadcrumb">
+            <a href="{% url 'shop:index' %}">
+                <i class="fas fa-home"></i>
+                Home
+            </a>
+            <i class="fas fa-chevron-right"></i>
+            <a href="{% url 'shop:index' %}">{{ product.category.name }}</a>
+            <i class="fas fa-chevron-right"></i>
+            <span>{{ product.name }}</span>
+        </nav>
         
-        <div class="product-info">
-            <nav class="breadcrumb">
-                <a href="{% url 'shop:index' %}">Home</a> > 
-                <span>{{ product.category.name }}</span> > 
-                <span>{{ product.name }}</span>
-            </nav>
-            
-            <h1>{{ product.name }}</h1>
-            <p class="price">${{ product.price }}</p>
-            
-            <div class="product-description">
-                <p>{{ product.description }}</p>
+        <!-- Product Detail Section -->
+        <div class="product-detail-container">
+            <!-- Product Image -->
+            <div class="product-image-section">
+                <div class="product-image-wrapper">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-main-image">
+                    {% else %}
+                        <img src="{% static 'images/placeholder.jpg' %}" alt="{{ product.name }}" class="product-main-image">
+                    {% endif %}
+                </div>
             </div>
             
-            <form class="add-to-cart-form" onsubmit="addToCart(event)">
-                <div class="size-selector">
-                    <label for="size">Size:</label>
-                    <select name="size" id="size" required>
-                        <option value="">Select Size</option>
-                        {% for size in sizes %}
-                            <option value="{{ size }}">{{ size }}</option>
-                        {% endfor %}
-                    </select>
+            <!-- Product Info -->
+            <div class="product-info-section">
+                <div class="product-header">
+                    <span class="product-category-badge">{{ product.category.name }}</span>
+                    <h1 class="product-title">{{ product.name }}</h1>
                 </div>
                 
-                <div class="quantity-selector">
-                    <label for="quantity">Quantity:</label>
-                    <div class="quantity-controls">
-                        <button type="button" onclick="decreaseQuantity()">-</button>
-                        <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ product.stock }}">
-                        <button type="button" onclick="increaseQuantity()">+</button>
+                <!-- Price Badge -->
+                <div class="product-price-badge">
+                    <span class="price-label">Price</span>
+                    <span class="price-amount">${{ product.price }}</span>
+                </div>
+                
+                <!-- Description -->
+                <div class="product-description-box">
+                    <h3><i class="fas fa-info-circle"></i> Description</h3>
+                    <p>{{ product.description }}</p>
+                </div>
+                
+                <!-- Add to Cart Form -->
+                <form class="modern-cart-form" onsubmit="addToCart(event)">
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                    
+                    <!-- Size Selector -->
+                    <div class="form-section">
+                        <label class="form-label">
+                            <i class="fas fa-ruler"></i>
+                            Select Size
+                        </label>
+                        <div class="size-buttons">
+                            {% for size in sizes %}
+                                <button type="button" class="size-btn" data-size="{{ size }}" onclick="selectSize(this, '{{ size }}')">
+                                    {{ size }}
+                                </button>
+                            {% endfor %}
+                        </div>
+                        <input type="hidden" name="size" id="size" required>
                     </div>
-                </div>
-                
-                <div class="stock-info">
-                    <p>In Stock: {{ product.stock }} items</p>
-                </div>
-                
-                <input type="hidden" name="product_id" value="{{ product.id }}">
-                
-                <button type="submit" class="btn-primary add-to-cart-btn">
-                    <i class="fas fa-cart-plus"></i>
-                    Add to Cart
-                </button>
-            </form>
+                    
+                    <!-- Quantity Selector -->
+                    <div class="form-section">
+                        <label class="form-label">
+                            <i class="fas fa-boxes"></i>
+                            Quantity
+                        </label>
+                        <div class="modern-quantity-controls">
+                            <button type="button" class="qty-btn" onclick="decreaseQuantity()">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ product.stock }}" readonly>
+                            <button type="button" class="qty-btn" onclick="increaseQuantity()">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Stock Info -->
+                    <div class="stock-indicator">
+                        {% if product.stock > 10 %}
+                            <span class="stock-badge in-stock">
+                                <i class="fas fa-check-circle"></i>
+                                In Stock: {{ product.stock }} items
+                            </span>
+                        {% elif product.stock > 0 %}
+                            <span class="stock-badge low-stock">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Low Stock: Only {{ product.stock }} left!
+                            </span>
+                        {% else %}
+                            <span class="stock-badge out-of-stock">
+                                <i class="fas fa-times-circle"></i>
+                                Out of Stock
+                            </span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Add to Cart Button -->
+                    <button type="submit" class="modern-add-to-cart-btn" {% if product.stock == 0 %}disabled{% endif %}>
+                        <i class="fas fa-shopping-cart"></i>
+                        Add to Cart
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
+
 {% endblock %}
 
 {% block scripts %}
 <script>
+// Size selection
+function selectSize(button, size) {
+    // Remove selected class from all buttons
+    document.querySelectorAll('.size-btn').forEach(btn => {
+        btn.classList.remove('selected');
+    });
+    
+    // Add selected class to clicked button
+    button.classList.add('selected');
+    
+    // Set hidden input value
+    document.getElementById('size').value = size;
+}
+
+// Quantity controls
 function increaseQuantity() {
     const quantityInput = document.getElementById('quantity');
     const currentValue = parseInt(quantityInput.value);

@@ -173,7 +173,6 @@ def remove_from_cart(request):
     
     return JsonResponse({'success': False, 'message': 'Invalid request'})
 
-@login_required
 def checkout(request):
     cart = get_cart(request)
     cart_items = cart.items.all()
@@ -181,9 +180,6 @@ def checkout(request):
     if not cart_items:
         messages.error(request, 'Your cart is empty.')
         return redirect('shop:cart')
-    
-    # Create customer if doesn't exist
-    customer, created = Customer.objects.get_or_create(user=request.user)
     
     # Calculate total in cents for Stripe
     total_amount = cart.get_total_price()
@@ -196,13 +192,18 @@ def checkout(request):
             messages.error(request, 'Invalid cart total. Please check your cart.')
             return redirect('shop:cart')
         
+        metadata = {'session_key': request.session.session_key}
+        
+        # Add user info if authenticated
+        if request.user.is_authenticated:
+            customer, created = Customer.objects.get_or_create(user=request.user)
+            metadata['user_id'] = request.user.id
+            metadata['customer_id'] = customer.id
+        
         intent = stripe.PaymentIntent.create(
             amount=total_cents,
             currency='usd',
-            metadata={
-                'user_id': request.user.id,
-                'customer_id': customer.id,
-            }
+            metadata=metadata
         )
     except stripe.error.StripeError as e:
         logger.error(f"Stripe error: {str(e)}")
@@ -219,10 +220,10 @@ def checkout(request):
         'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
         'client_secret': intent.client_secret,
         'total_amount': total_amount,
+        'is_guest': not request.user.is_authenticated,
     }
     return render(request, 'shop/checkout.html', context)
 
-@login_required
 def process_payment(request):
     """Handle payment confirmation and create order"""
     if request.method == 'POST':
@@ -230,6 +231,7 @@ def process_payment(request):
             data = json.loads(request.body)
             payment_intent_id = data.get('payment_intent_id')
             shipping_address = data.get('shipping_address', '')
+            guest_email = data.get('guest_email', '').strip()  # For guest checkout
             
             # Verify payment intent with Stripe
             try:
@@ -241,10 +243,24 @@ def process_payment(request):
             if intent.status != 'succeeded':
                 return JsonResponse({'success': False, 'message': 'Payment not completed'})
             
-            # Get cart and customer
+            # Get cart
             cart = get_cart(request)
             cart_items = cart.items.all()
-            customer, created = Customer.objects.get_or_create(user=request.user)
+            
+            # Handle customer creation (authenticated or guest)
+            if request.user.is_authenticated:
+                customer, created = Customer.objects.get_or_create(user=request.user)
+            else:
+                # Guest checkout - validate email
+                if not guest_email:
+                    return JsonResponse({'success': False, 'message': 'Email is required for guest checkout'})
+                
+                # Create or get guest customer
+                customer, created = Customer.objects.get_or_create(
+                    guest_email=guest_email,
+                    user=None,
+                    defaults={'guest_email': guest_email}
+                )
             
             # Get charge ID safely
             charge_id = ''
@@ -256,6 +272,7 @@ def process_payment(request):
             # Create order
             order = Order.objects.create(
                 customer=customer,
+                guest_email=guest_email if not request.user.is_authenticated else '',
                 total_amount=cart.get_total_price(),
                 shipping_address=shipping_address,
                 payment_status='completed',
@@ -287,6 +304,8 @@ def process_payment(request):
             return JsonResponse({
                 'success': True,
                 'order_id': order.id,
+                'order_token': order.order_lookup_token,
+                'is_guest': not request.user.is_authenticated,
                 'message': f'Order #{order.id} placed successfully!'
             })
             
@@ -297,7 +316,24 @@ def process_payment(request):
     return JsonResponse({'success': False, 'message': 'Invalid request'})
 
 def order_success(request, order_id):
-    order = get_object_or_404(Order, id=order_id, customer__user=request.user)
+    """Order success page - accessible by authenticated users or via token for guests"""
+    order = get_object_or_404(Order, id=order_id)
+    
+    # Check access permissions
+    if request.user.is_authenticated:
+        # Authenticated users can only view their own orders
+        if order.customer.user != request.user:
+            messages.error(request, 'You do not have permission to view this order.')
+            return redirect('shop:index')
+    else:
+        # Guest users need the correct token in session or URL
+        token = request.GET.get('token') or request.session.get(f'order_token_{order_id}')
+        if token != order.order_lookup_token:
+            messages.error(request, 'Invalid order access.')
+            return redirect('shop:index')
+        # Store token in session for this order
+        request.session[f'order_token_{order_id}'] = token
+    
     return render(request, 'shop/order_success.html', {'order': order})
 
 
@@ -371,7 +407,6 @@ def signup(request):
             user = authenticate(username=username, password=form.cleaned_data.get('password1'))
             if user is not None:
                 login(request, user)
-            return redirect('shop:index')
     else:
         form = SignUpForm()
     return render(request, 'registration/signup.html', {'form': form})
@@ -389,10 +424,38 @@ def my_orders(request):
     }
     return render(request, 'shop/my_orders.html', context)
 
+def guest_order_lookup(request):
+    """Allow guests to look up their orders"""
+    order = None
+    error = None
+    
+    if request.method == 'POST':
+        email = request.POST.get('email', '').strip()
+        order_id = request.POST.get('order_id', '').strip()
+        
+        if email and order_id:
+            try:
+                order = Order.objects.get(
+                    id=order_id,
+                    guest_email=email
+                )
+                # Store token in session for accessing order details
+                request.session[f'order_token_{order.id}'] = order.order_lookup_token
+            except Order.DoesNotExist:
+                error = "Order not found. Please check your email and order number."
+            except ValueError:
+                error = "Invalid order number."
+        else:
+            error = "Please provide both email and order number."
+    
+    context = {
+        'order': order,
+        'error': error,
+    }
+    return render(request, 'shop/guest_order_lookup.html', context)
 
 class PlainTextPasswordResetView(PasswordResetView):
     email_template_name = 'registration/password_reset_email.txt'
-
 
 @csrf_exempt
 def stripe_webhook(request):

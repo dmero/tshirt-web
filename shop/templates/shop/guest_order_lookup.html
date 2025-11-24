@@ -1,0 +1,537 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block title %}Track Your Order - T-Shirt Shop{% endblock %}
+
+{% block content %}
+<div class="guest-lookup-page">
+    <div class="container">
+        <div class="lookup-header">
+            <div class="lookup-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h1>Track Your Order</h1>
+            <p class="lookup-subtitle">Enter your email and order number to view your order status</p>
+        </div>
+        
+        {% if not order %}
+        <div class="lookup-form-container">
+            <form method="POST" class="lookup-form">
+                {% csrf_token %}
+                
+                {% if error %}
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>{{ error }}</span>
+                </div>
+                {% endif %}
+                
+                <div class="form-group">
+                    <label for="email">
+                        <i class="fas fa-envelope"></i>
+                        Email Address
+                    </label>
+                    <input type="email" 
+                           id="email" 
+                           name="email" 
+                           required 
+                           placeholder="your.email@example.com"
+                           value="{{ request.POST.email|default:'' }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="order_id">
+                        <i class="fas fa-hashtag"></i>
+                        Order Number
+                    </label>
+                    <input type="text" 
+                           id="order_id" 
+                           name="order_id" 
+                           required 
+                           placeholder="123"
+                           value="{{ request.POST.order_id|default:'' }}">
+                    <p class="field-hint">You can find this in your confirmation email</p>
+                </div>
+                
+                <button type="submit" class="btn-lookup">
+                    <i class="fas fa-search"></i>
+                    Track Order
+                </button>
+            </form>
+            
+            <div class="help-section">
+                <p><i class="fas fa-info-circle"></i> Need help? Contact us at <a href="mailto:support@tshirtshop.com">support@tshirtshop.com</a></p>
+            </div>
+        </div>
+        {% else %}
+        <!-- Order Found -->
+        <div class="order-details-container">
+            <div class="success-message">
+                <i class="fas fa-check-circle"></i>
+                <span>Order Found!</span>
+            </div>
+            
+            <div class="order-card">
+                <div class="order-header">
+                    <h2>Order #{{ order.id }}</h2>
+                    <span class="order-status status-{{ order.status }}">
+                        {{ order.get_status_display }}
+                    </span>
+                </div>
+                
+                <div class="order-info">
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="fas fa-calendar"></i>
+                            Order Date:
+                        </span>
+                        <span class="info-value">{{ order.created_at|date:"F d, Y" }}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="fas fa-envelope"></i>
+                            Email:
+                        </span>
+                        <span class="info-value">{{ order.guest_email }}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="fas fa-dollar-sign"></i>
+                            Total:
+                        </span>
+                        <span class="info-value">${{ order.total_amount }}</span>
+                    </div>
+                    
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="fas fa-credit-card"></i>
+                            Payment:
+                        </span>
+                        <span class="info-value payment-{{ order.payment_status }}">
+                            {{ order.get_payment_status_display }}
+                        </span>
+                    </div>
+                    
+                    {% if order.tracking_number %}
+                    <div class="info-row">
+                        <span class="info-label">
+                            <i class="fas fa-shipping-fast"></i>
+                            Tracking:
+                        </span>
+                        <span class="info-value">
+                            {% if order.tracking_url %}
+                                <a href="{{ order.tracking_url }}" target="_blank">{{ order.tracking_number }}</a>
+                            {% else %}
+                                {{ order.tracking_number }}
+                            {% endif %}
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="order-items">
+                    <h3><i class="fas fa-box"></i> Order Items</h3>
+                    {% for item in order.items.all %}
+                    <div class="order-item">
+                        <div class="item-info">
+                            <span class="item-name">{{ item.product.name }}</span>
+                            <span class="item-details">Size: {{ item.size }} | Qty: {{ item.quantity }}</span>
+                        </div>
+                        <div class="item-price">${{ item.get_total_price }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="order-actions">
+                    <a href="{% url 'shop:guest_order_lookup' %}" class="btn-secondary">
+                        <i class="fas fa-search"></i>
+                        Track Another Order
+                    </a>
+                    <a href="{% url 'shop:index' %}" class="btn-primary">
+                        <i class="fas fa-home"></i>
+                        Back to Shop
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+/* Guest Lookup Page */
+.guest-lookup-page {
+    background: var(--light);
+    padding: var(--spacing-xl) 0;
+    min-height: calc(100vh - 80px);
+}
+
+/* Lookup Header */
+.lookup-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+    animation: fadeInUp 0.6s ease;
+}
+
+.lookup-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--spacing-md);
+    background: var(--gradient-warm);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-lg);
+}
+
+.lookup-icon i {
+    font-size: 2.5rem;
+    color: white;
+}
+
+.lookup-header h1 {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    color: var(--dark);
+    margin-bottom: var(--spacing-xs);
+}
+
+.lookup-subtitle {
+    color: var(--gray-medium);
+    font-size: 1.1rem;
+}
+
+/* Lookup Form Container */
+.lookup-form-container {
+    max-width: 500px;
+    margin: 0 auto;
+    animation: fadeInUp 0.6s ease 0.2s both;
+}
+
+.lookup-form {
+    background: white;
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.form-group {
+    margin-bottom: var(--spacing-lg);
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-sm);
+    font-size: 1rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: var(--spacing-md);
+    border: 2px solid var(--gray-light);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-family: var(--font-body);
+    transition: all var(--transition-fast);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(45, 53, 97, 0.1);
+}
+
+.field-hint {
+    margin-top: var(--spacing-xs);
+    font-size: 0.875rem;
+    color: var(--gray-medium);
+    font-style: italic;
+}
+
+.btn-lookup {
+    width: 100%;
+    padding: 1rem 2rem;
+    background: var(--gradient-warm);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-base);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-lookup:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.alert {
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+}
+
+.alert-error {
+    background: #f8d7da;
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+}
+
+.help-section {
+    margin-top: var(--spacing-lg);
+    text-align: center;
+    color: var(--gray-medium);
+}
+
+.help-section a {
+    color: var(--secondary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.help-section a:hover {
+    text-decoration: underline;
+}
+
+/* Order Details Container */
+.order-details-container {
+    max-width: 800px;
+    margin: 0 auto;
+    animation: fadeInUp 0.6s ease 0.2s both;
+}
+
+.success-message {
+    background: #d4edda;
+    color: #155724;
+    padding: 1.25rem;
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    border-left: 4px solid #28a745;
+}
+
+.success-message i {
+    font-size: 1.5rem;
+}
+
+.order-card {
+    background: white;
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 2px solid var(--gray-light);
+    margin-bottom: var(--spacing-lg);
+}
+
+.order-header h2 {
+    margin: 0;
+    color: var(--dark);
+    font-family: var(--font-heading);
+}
+
+.order-status {
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-pending { background: #fff3cd; color: #856404; }
+.status-processing { background: #d1ecf1; color: #0c5460; }
+.status-shipped { background: #cce5ff; color: #004085; }
+.status-delivered { background: #d4edda; color: #155724; }
+.status-cancelled { background: #f8d7da; color: #721c24; }
+
+.order-info {
+    margin-bottom: var(--spacing-lg);
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--gray-medium);
+    font-weight: 600;
+}
+
+.info-value {
+    font-weight: 700;
+    color: var(--dark);
+}
+
+.info-value a {
+    color: var(--secondary-color);
+    text-decoration: none;
+}
+
+.info-value a:hover {
+    text-decoration: underline;
+}
+
+.payment-completed { color: #28a745; }
+.payment-pending { color: #ffc107; }
+.payment-failed { color: #dc3545; }
+.payment-refunded { color: #6c757d; }
+
+.order-items {
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 2px solid var(--gray-light);
+}
+
+.order-items h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: var(--spacing-md);
+    color: var(--primary-color);
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md);
+    background: var(--light);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-sm);
+}
+
+.item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.item-name {
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.item-details {
+    font-size: 0.875rem;
+    color: var(--gray-medium);
+}
+
+.item-price {
+    font-weight: 700;
+    color: var(--secondary-color);
+    font-size: 1.1rem;
+}
+
+.order-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-lg);
+    border-top: 2px solid var(--gray-light);
+}
+
+.btn-primary, .btn-secondary {
+    flex: 1;
+    padding: 0.875rem 1.5rem;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all var(--transition-base);
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: var(--gradient-warm);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+    background: white;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+
+.btn-secondary:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .lookup-header h1 {
+        font-size: 2rem;
+    }
+    
+    .lookup-form {
+        padding: var(--spacing-lg);
+    }
+    
+    .order-card {
+        padding: var(--spacing-lg);
+    }
+    
+    .order-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+    
+    .order-actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}

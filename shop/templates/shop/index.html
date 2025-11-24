@@ -1,17 +1,19 @@
 {% extends 'shop/base.html' %}
 {% load static %}
 
-{% block title %}T-Shirt Shop - Quality T-Shirts{% endblock %}
+{% block title %}T-Shirt Shop - Premium Quality T-Shirts{% endblock %}
 
 {% block content %}
+<!-- Hero Section -->
 <div class="hero-section">
     <div class="hero-content">
         <h1>Premium T-Shirts</h1>
-        <p>Discover our collection of high-quality, comfortable t-shirts</p>
-        <a href="#products" class="cta-btn">Shop Now</a>
+        <p>Discover our curated collection of high-quality, comfortable t-shirts designed for every occasion</p>
+        <a href="#products" class="cta-btn">Explore Collection</a>
     </div>
 </div>
 
+<!-- Products Section -->
 <section class="products-section" id="products">
     <div class="container">
         <h2 class="section-title">Featured Products</h2>
@@ -30,9 +32,9 @@
                     </div>
                 </div>
                 <div class="product-info">
+                    <p class="product-category">{{ product.category.name }}</p>
                     <h3>{{ product.name }}</h3>
                     <p class="product-price">${{ product.price }}</p>
-                    <p class="product-category">{{ product.category.name }}</p>
                 </div>
             </div>
             {% endfor %}

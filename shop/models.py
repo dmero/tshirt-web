@@ -2,6 +2,7 @@ from django.db import models
 
 from django.contrib.auth.models import User
 from django.urls import reverse
+import uuid
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -49,7 +50,8 @@ class Product(models.Model):
         return [size.strip() for size in self.available_sizes.split(',')]
 
 class Customer(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    guest_email = models.EmailField(blank=True, null=True)  # For guest customers
     phone = models.CharField(max_length=15, blank=True)
     address = models.TextField(blank=True)
     city = models.CharField(max_length=100, blank=True)
@@ -58,10 +60,15 @@ class Customer(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
-        # Show full name if available, otherwise username
-        if self.user.first_name and self.user.last_name:
-            return f"{self.user.first_name} {self.user.last_name}"
-        return self.user.username
+        # Show full name if available, otherwise username or guest email
+        if self.user:
+            if self.user.first_name and self.user.last_name:
+                return f"{self.user.first_name} {self.user.last_name}"
+            return self.user.username
+        return f"Guest ({self.guest_email})"
+    
+    def is_guest(self):
+        return self.user is None
 
 class Order(models.Model):
     STATUS_CHOICES = [
@@ -80,6 +87,8 @@ class Order(models.Model):
     ]
     
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    guest_email = models.EmailField(blank=True, null=True)  # Store guest email for confirmation
+    order_lookup_token = models.CharField(max_length=100, unique=True, blank=True, null=True)  # For guest order tracking
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
@@ -99,8 +108,19 @@ class Order(models.Model):
     class Meta:
         ordering = ['-created_at']
     
+    def save(self, *args, **kwargs):
+        # Generate lookup token for guest orders
+        if not self.order_lookup_token:
+            self.order_lookup_token = str(uuid.uuid4())
+        super().save(*args, **kwargs)
+    
     def __str__(self):
-        return f"Order #{self.id} - {self.customer.user.username}"
+        if self.customer.user:
+            return f"Order #{self.id} - {self.customer.user.username}"
+        return f"Order #{self.id} - Guest ({self.guest_email})"
+    
+    def is_guest_order(self):
+        return self.customer.is_guest()
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)

@@ -4,55 +4,138 @@
 {% block title %}Checkout - T-Shirt Shop{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1>Checkout</h1>
-    
-    <div class="checkout-page">
-        <div class="checkout-form">
-            <form id="payment-form">
-                {% csrf_token %}
-                <div class="form-section">
-                    <h3>Shipping Information</h3>
-                    <div class="form-group">
-                        <label for="shipping_address">Shipping Address:</label>
-                        <textarea name="shipping_address" id="shipping_address" required 
-                                placeholder="Enter your complete shipping address"></textarea>
-                    </div>
-                </div>
-                
-                <div class="form-section">
-                    <h3>Payment Information</h3>
-                    <div id="card-element" class="stripe-card-element">
-                        <!-- Stripe Card Element will be inserted here -->
-                    </div>
-                    <div id="card-errors" role="alert" class="card-errors"></div>
-                </div>
-                
-                <button type="submit" id="submit-payment" class="btn-primary place-order-btn">
-                    <span id="button-text">Pay ${{ cart.get_total_price }}</span>
-                    <span id="spinner" class="spinner hidden"></span>
-                </button>
-                
-                <div id="payment-message" class="payment-message hidden"></div>
-            </form>
+<div class="checkout-page">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="checkout-header">
+            <div class="checkout-icon">
+                <i class="fas fa-shopping-bag"></i>
+            </div>
+            <h1>Secure Checkout</h1>
+            <p class="checkout-subtitle">Complete your purchase securely</p>
         </div>
         
-        <div class="order-summary">
-            <h3>Order Summary</h3>
-            {% for item in cart_items %}
-            <div class="order-item">
-                <div class="item-info">
-                    <span>{{ item.product.name }} ({{ item.size }})</span>
-                    <span>x{{ item.quantity }}</span>
-                </div>
-                <div class="item-price">
-                    ${{ item.get_total_price }}
-                </div>
+        <div class="checkout-container">
+            <!-- Checkout Form Section -->
+            <div class="checkout-form-section">
+                <form id="payment-form">
+                    {% csrf_token %}
+                    
+                    {% if is_guest %}
+                    <!-- Guest Email -->
+                    <div class="modern-form-card">
+                        <div class="form-card-header">
+                            <i class="fas fa-user"></i>
+                            <h3>Contact Information</h3>
+                        </div>
+                        <div class="form-card-body">
+                            <div class="modern-input-group">
+                                <label for="guest_email">
+                                    <i class="fas fa-envelope"></i>
+                                    Email Address
+                                </label>
+                                <input type="email" name="guest_email" id="guest_email" required 
+                                       placeholder="your.email@example.com">
+                                <p class="input-hint">We'll send your order confirmation to this email</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Shipping Information -->
+                    <div class="modern-form-card">
+                        <div class="form-card-header">
+                            <i class="fas fa-shipping-fast"></i>
+                            <h3>Shipping Information</h3>
+                        </div>
+                        <div class="form-card-body">
+                            <div class="modern-input-group">
+                                <label for="shipping_address">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Delivery Address
+                                </label>
+                                <textarea name="shipping_address" id="shipping_address" required 
+                                        placeholder="Enter your complete shipping address&#10;Street, City, State, ZIP Code"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Information -->
+                    <div class="modern-form-card">
+                        <div class="form-card-header">
+                            <i class="fas fa-credit-card"></i>
+                            <h3>Payment Information</h3>
+                        </div>
+                        <div class="form-card-body">
+                            <div class="secure-badge">
+                                <i class="fas fa-lock"></i>
+                                <span>Secure Payment via Stripe</span>
+                            </div>
+                            <div id="card-element" class="modern-card-element">
+                                <!-- Stripe Card Element will be inserted here -->
+                            </div>
+                            <div id="card-errors" role="alert" class="modern-card-errors"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <button type="submit" id="submit-payment" class="modern-checkout-btn">
+                        <span id="button-text">
+                            <i class="fas fa-lock"></i>
+                            Pay ${{ cart.get_total_price }}
+                        </span>
+                        <span id="spinner" class="spinner hidden"></span>
+                    </button>
+                    
+                    <div id="payment-message" class="payment-message hidden"></div>
+                </form>
             </div>
-            {% endfor %}
             
-            <div class="total-row">
-                <strong>Total: ${{ cart.get_total_price }}</strong>
+            <!-- Order Summary Section -->
+            <div class="checkout-summary-section">
+                <div class="modern-summary-card">
+                    <div class="summary-header">
+                        <i class="fas fa-receipt"></i>
+                        <h3>Order Summary</h3>
+                    </div>
+                    
+                    <div class="summary-items">
+                        {% for item in cart_items %}
+                        <div class="summary-item">
+                            <div class="item-details">
+                                <span class="item-name">{{ item.product.name }}</span>
+                                <div class="item-meta">
+                                    <span class="item-size">Size: {{ item.size }}</span>
+                                    <span class="item-qty">Qty: {{ item.quantity }}</span>
+                                </div>
+                            </div>
+                            <div class="item-price">
+                                ${{ item.get_total_price }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="summary-total">
+                        <span>Total</span>
+                        <span class="total-amount">${{ cart.get_total_price }}</span>
+                    </div>
+                    
+                    <div class="trust-badges">
+                        <div class="trust-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Secure Checkout</span>
+                        </div>
+                        <div class="trust-item">
+                            <i class="fas fa-truck"></i>
+                            <span>Fast Shipping</span>
+                        </div>
+                        <div class="trust-item">
+                            <i class="fas fa-undo"></i>
+                            <span>Easy Returns</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -110,6 +193,8 @@ form.addEventListener('submit', async function(event) {
     buttonText.classList.add('hidden');
     
     const shippingAddress = document.getElementById('shipping_address').value;
+    const guestEmailField = document.getElementById('guest_email');
+    const guestEmail = guestEmailField ? guestEmailField.value : '';
     
     // Confirm the payment
     const {error, paymentIntent} = await stripe.confirmCardPayment('{{ client_secret }}', {
@@ -139,7 +224,8 @@ form.addEventListener('submit', async function(event) {
                     },
                     body: JSON.stringify({
                         payment_intent_id: paymentIntent.id,
-                        shipping_address: shippingAddress
+                        shipping_address: shippingAddress,
+                        guest_email: guestEmail
                     })
                 });
                 
@@ -147,7 +233,11 @@ form.addEventListener('submit', async function(event) {
                 
                 if (data.success) {
                     // Redirect to success page
-                    window.location.href = `/order-success/${data.order_id}/`;
+                    if (data.is_guest) {
+                        window.location.href = `/order-success/${data.order_id}/?token=${data.order_token}`;
+                    } else {
+                        window.location.href = `/order-success/${data.order_id}/`;
+                    }
                 } else {
                     throw new Error(data.message || 'Order creation failed');
                 }
@@ -163,56 +253,4 @@ form.addEventListener('submit', async function(event) {
 });
 </script>
 
-<style>
-.stripe-card-element {
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-bottom: 15px;
-}
-
-.card-errors {
-    color: #fa755a;
-    font-size: 14px;
-    margin-top: 10px;
-}
-
-.spinner {
-    border: 2px solid #f3f3f3;
-    border-top: 2px solid #3498db;
-    border-radius: 50%;
-    width: 16px;
-    height: 16px;
-    animation: spin 1s linear infinite;
-    display: inline-block;
-    margin-left: 10px;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.hidden {
-    display: none !important;
-}
-
-.payment-message {
-    margin-top: 15px;
-    padding: 10px;
-    border-radius: 4px;
-}
-
-.payment-message.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-.payment-message.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-</style>
 {% endblock %}

@@ -6,8 +6,12 @@
     <meta name="csrf-token" content="{{ csrf_token }}">
     <title>{% block title %}T-Shirt Shop{% endblock %}</title>
     {% load static %}
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}?v=5.1" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->
@@ -34,6 +38,7 @@
                     </form>
                     <span class="nav-link">Hello, {{ user.first_name|default:user.username }}</span>
                 {% else %}
+                    <a href="{% url 'shop:guest_order_lookup' %}" class="nav-link">Track Order</a>
                     <a href="{% url 'login' %}" class="nav-link">Login</a>
                     <a href="{% url 'shop:signup' %}" class="nav-link">Sign Up</a>
                 {% endif %}
@@ -75,6 +80,9 @@
 
     <!-- Cart Overlay -->
     <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+    
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -119,7 +127,35 @@
         </div>
     </footer>
 
-    <script src="{% static 'js/cart.js' %}"></script>
+    <script src="{% static 'js/cart.js' %}?v=3.1"></script>
+    <script>
+        // Mobile menu toggle function
+        window.toggleMenu = function() {
+            const navMenu = document.querySelector('.nav-menu');
+            const menuToggle = document.querySelector('.menu-toggle');
+            const mobileOverlay = document.getElementById('mobile-menu-overlay');
+            const body = document.body;
+            
+            if (navMenu) navMenu.classList.toggle('active');
+            if (menuToggle) menuToggle.classList.toggle('active');
+            if (mobileOverlay) mobileOverlay.classList.toggle('active');
+            
+            // Prevent body scroll when menu is open on mobile
+            if (navMenu && navMenu.classList.contains('active')) {
+                body.style.overflow = 'hidden';
+            } else {
+                body.style.overflow = 'auto';
+            }
+        };
+        
+        // Close menu when clicking overlay
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileOverlay = document.getElementById('mobile-menu-overlay');
+            if (mobileOverlay) {
+                mobileOverlay.addEventListener('click', toggleMenu);
+            }
+        });
+    </script>
     {% block scripts %}{% endblock %}
 </body>
 </html>
