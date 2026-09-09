@@ -1,107 +1,28 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .header {
-            background-color: #4CAF50;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            border-radius: 5px 5px 0 0;
-        }
-        .content {
-            background-color: #f9f9f9;
-            padding: 20px;
-            border: 1px solid #ddd;
-        }
-        .order-details {
-            background-color: white;
-            padding: 15px;
-            margin: 15px 0;
-            border-left: 4px solid #4CAF50;
-        }
-        .item {
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-        }
-        .item:last-child {
-            border-bottom: none;
-        }
-        .total {
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 2px solid #4CAF50;
-        }
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            font-size: 12px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🎉 Order Confirmed!</h1>
-        </div>
-
-        <div class="content">
-            <p>Hi {% if order.customer.user %}{{ order.customer.user.first_name|default:order.customer.user.username }}{% else %}there{% endif %},</p>
-
-            <p>Thank you for your order! We've received your payment and are processing your order.</p>
-
-            <div class="order-details">
-                <h2>Order Details</h2>
-                <p><strong>Order Number:</strong> #{{ order.id }}</p>
-                <p><strong>Order Date:</strong> {{ order.created_at|date:"F d, Y at h:i A" }}</p>
-                <p><strong>Payment Status:</strong> {{ order.get_payment_status_display }}</p>
-
-                <h3>Items Ordered:</h3>
-                {% for item in order.items.all %}
-                <div class="item">
-                    <strong>{{ item.product.name }}</strong> (Size: {{ item.size }})<br>
-                    Quantity: {{ item.quantity }} × ${{ item.price }} = ${{ item.get_total_price }}
-                </div>
-                {% endfor %}
-
-                <div class="total">
-                    Total Amount: ${{ order.total_amount }}
-                </div>
-            </div>
-
-            <div class="order-details">
-                <h3>Shipping Address:</h3>
-                <p>{{ order.shipping_address|linebreaks }}</p>
-            </div>
-
-            <p>You can track your order status by visiting: <a href="{{ site_url }}/order-success/{{ order.pk }}/?token={{ order.order_lookup_token }}">My Orders</a></p>
-
-            <p>If you have any questions, please don't hesitate to contact us.</p>
-
-            <p>Thank you for shopping with us!</p>
-
-            <p>Best regards,<br>
-            <strong>T-Shirt Shop Team</strong></p>
-        </div>
-
-        <div class="footer">
-            <p>This is an automated email. Please do not reply to this message.</p>
-            <p>&copy; 2025 T-Shirt Shop. All rights reserved.</p>
-        </div>
-    </div>
-</body>
-</html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Order confirmation</title></head>
+<body style="margin:0;padding:0;background:#ffffff;color:#263b34;font-family:Arial,sans-serif;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;">
+<tr><td align="center" style="padding:12px 8px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;max-width:560px;border-collapse:collapse;font-size:14px;line-height:1.45;overflow-wrap:anywhere;">
+<tr><td style="padding:16px 20px;background:#214c40;color:#ffffff;">
+<p style="margin:0 0 4px;font-size:12px;letter-spacing:1px;">T-SHIRT SHOP</p>
+<h1 style="margin:0;font-size:22px;line-height:1.25;">Order confirmed</h1>
+</td></tr>
+<tr><td style="padding:16px 20px;background:#f7f8f5;">
+<p style="margin:0 0 12px;">Hi {% if order.customer.user %}{{ order.customer.user.first_name|default:order.customer.user.username }}{% else %}there{% endif %}, your payment is received. We're preparing your order.</p>
+<p style="margin:0 0 12px;"><strong>Order #{{ order.id }}</strong> &middot; {{ order.created_at|date:"M j, Y" }}<br>Payment: {{ order.get_payment_status_display }}</p>
+<table width="100%" cellpadding="0" cellspacing="0" style="width:100%;table-layout:fixed;border-collapse:collapse;font-size:14px;">
+{% for item in order.items.all %}
+<tr><td style="padding:8px 0;border-bottom:1px solid #dce3dd;overflow-wrap:anywhere;"><strong>{{ item.product.name }}</strong><br><span style="color:#52635c;">Size {{ item.size }} &middot; Qty {{ item.quantity }} &times; ${{ item.price }}</span></td><td width="80" align="right" style="padding:8px 0;border-bottom:1px solid #dce3dd;vertical-align:top;">${{ item.get_total_price }}</td></tr>
+{% endfor %}
+<tr><td style="padding:10px 0;font-weight:bold;">Total (USD)</td><td align="right" style="padding:10px 0;font-weight:bold;">${{ order.total_amount }}</td></tr>
+</table>
+<h2 style="margin:8px 0 4px;font-size:14px;">Delivery address</h2>
+<p style="margin:0 0 16px;overflow-wrap:anywhere;">{{ order.shipping_address|linebreaksbr }}</p>
+<a href="{{ site_url }}/order-success/{{ order.pk }}/?token={{ order.order_lookup_token }}" style="display:inline-block;padding:10px 16px;background:#214c40;color:#ffffff;text-decoration:none;border-radius:4px;font-weight:bold;">View your order</a>
+</td></tr>
+<tr><td style="padding:12px 20px;color:#68756e;font-size:12px;">Thanks for shopping with us.<br>This is an automated message. &copy; {% now "Y" %} T-Shirt Shop.</td></tr>
+</table>
+</td></tr></table>
+</body></html>
