@@ -193,7 +193,8 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = Path(os.getenv('MEDIA_ROOT', str(BASE_DIR / 'media')))
+SERVE_PRODUCT_IMAGES = os.getenv('SERVE_PRODUCT_IMAGES', 'False').lower() == 'true'
 
 
 
