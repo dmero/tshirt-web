@@ -9,6 +9,8 @@ __pycache__/
 .Python
 env/
 venv/
+.venv/
+preview.sqlite3
 ENV/
 build/
 develop-eggs/

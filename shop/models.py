@@ -8,10 +8,10 @@ class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=100, unique=True)
     description = models.TextField(blank=True)
-    
+
     class Meta:
         verbose_name_plural = 'categories'
-    
+
     def __str__(self):
         return self.name
 
@@ -24,7 +24,7 @@ class Product(models.Model):
         ('XL', 'Extra Large'),
         ('XXL', 'Double Extra Large'),
     ]
-    
+
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
     description = models.TextField()
@@ -36,16 +36,16 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     active = models.BooleanField(default=True)
-    
+
     class Meta:
         ordering = ['-created_at']
-    
+
     def __str__(self):
         return self.name
-    
+
     def get_absolute_url(self):
         return reverse('shop:product_detail', args=[self.slug])
-    
+
     def get_sizes_list(self):
         return [size.strip() for size in self.available_sizes.split(',')]
 
@@ -58,7 +58,7 @@ class Customer(models.Model):
     postal_code = models.CharField(max_length=20, blank=True)
     country = models.CharField(max_length=100, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     def __str__(self):
         # Show full name if available, otherwise username or guest email
         if self.user:
@@ -66,7 +66,7 @@ class Customer(models.Model):
                 return f"{self.user.first_name} {self.user.last_name}"
             return self.user.username
         return f"Guest ({self.guest_email})"
-    
+
     def is_guest(self):
         return self.user is None
 
@@ -78,14 +78,14 @@ class Order(models.Model):
         ('delivered', 'Delivered'),
         ('cancelled', 'Cancelled'),
     ]
-    
+
     PAYMENT_STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('completed', 'Completed'),
         ('failed', 'Failed'),
         ('refunded', 'Refunded'),
     ]
-    
+
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     guest_email = models.EmailField(blank=True, null=True)  # Store guest email for confirmation
     order_lookup_token = models.CharField(max_length=100, unique=True, blank=True, null=True)  # For guest order tracking
@@ -94,31 +94,32 @@ class Order(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     shipping_address = models.TextField()
-    
+
     # Payment fields
     payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='pending')
-    payment_intent_id = models.CharField(max_length=255, blank=True, null=True)
+    payment_intent_id = models.CharField(max_length=255, blank=True, null=True, unique=True)
+    checkout_session_key = models.CharField(max_length=40, blank=True, default='')
     stripe_charge_id = models.CharField(max_length=255, blank=True, null=True)
     payment_method = models.CharField(max_length=50, default='card')
-    
+
     # Shipping fields
     tracking_number = models.CharField(max_length=255, blank=True, null=True)
     tracking_url = models.URLField(blank=True, null=True)
-    
+
     class Meta:
         ordering = ['-created_at']
-    
+
     def save(self, *args, **kwargs):
         # Generate lookup token for guest orders
         if not self.order_lookup_token:
             self.order_lookup_token = str(uuid.uuid4())
         super().save(*args, **kwargs)
-    
+
     def __str__(self):
         if self.customer.user:
             return f"Order #{self.id} - {self.customer.user.username}"
         return f"Order #{self.id} - Guest ({self.guest_email})"
-    
+
     def is_guest_order(self):
         return self.customer.is_guest()
 
@@ -128,10 +129,10 @@ class OrderItem(models.Model):
     size = models.CharField(max_length=10)
     quantity = models.PositiveIntegerField(default=1)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    
+
     def __str__(self):
         return f"{self.quantity}x {self.product.name} ({self.size})"
-    
+
     def get_total_price(self):
         return self.quantity * self.price
 
@@ -139,13 +140,13 @@ class Cart(models.Model):
     session_key = models.CharField(max_length=40)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     def __str__(self):
         return f"Cart {self.session_key}"
-    
+
     def get_total_price(self):
         return sum(item.get_total_price() for item in self.items.all())
-    
+
     def get_total_items(self):
         return sum(item.quantity for item in self.items.all())
 
@@ -154,12 +155,12 @@ class CartItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     size = models.CharField(max_length=10)
     quantity = models.PositiveIntegerField(default=1)
-    
+
     class Meta:
         unique_together = ['cart', 'product', 'size']
-    
+
     def __str__(self):
         return f"{self.quantity}x {self.product.name} ({self.size})"
-    
+
     def get_total_price(self):
         return self.quantity * self.product.price

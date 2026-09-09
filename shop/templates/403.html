@@ -1,0 +1,7 @@
+{% extends 'registration/account_base.html' %}
+{% block title %}403 - T-Shirt Shop{% endblock %}
+{% block account_content %}
+<h1 id="account-title">This page is not available.</h1><p>You may need to sign in with the account that owns this order.</p>
+<a class="shop-button" href="{% url 'shop:index' %}">Back to the shop</a>
+<a class="account-back" href="{% url 'shop:guest_order_lookup' %}">Track an order</a>
+{% endblock %}

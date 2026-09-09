@@ -8,89 +8,157 @@
     <div class="container">
         <!-- Page Header -->
         <div class="checkout-header">
-            <div class="checkout-icon">
-                <i class="fas fa-shopping-bag"></i>
+            <!-- Progress Bar -->
+            <div class="checkout-progress">
+                <div class="step completed">
+                    <div class="step-icon"><i class="fas fa-shopping-cart"></i></div>
+                    <span>Bag</span>
+                </div>
+                <div class="step-line completed"></div>
+                <div class="step active">
+                    <div class="step-icon"><i class="fas fa-credit-card"></i></div>
+                    <span>Checkout</span>
+                </div>
+                <div class="step-line"></div>
+                <div class="step">
+                    <div class="step-icon"><i class="fas fa-check"></i></div>
+                    <span>Confirmation</span>
+                </div>
             </div>
+
             <h1>Secure Checkout</h1>
             <p class="checkout-subtitle">Complete your purchase securely</p>
         </div>
-        
+
         <div class="checkout-container">
             <!-- Checkout Form Section -->
             <div class="checkout-form-section">
                 <form id="payment-form">
                     {% csrf_token %}
-                    
+
                     {% if is_guest %}
                     <!-- Guest Email -->
                     <div class="modern-form-card">
-                        <div class="form-card-header">
-                            <i class="fas fa-user"></i>
-                            <h3>Contact Information</h3>
+                        <div class="form-card-header-simple">
+                            <div class="header-icon"><i class="fas fa-user-circle"></i></div>
+                            <h3>Contact Info</h3>
                         </div>
                         <div class="form-card-body">
                             <div class="modern-input-group">
-                                <label for="guest_email">
-                                    <i class="fas fa-envelope"></i>
-                                    Email Address
-                                </label>
-                                <input type="email" name="guest_email" id="guest_email" required 
-                                       placeholder="your.email@example.com">
-                                <p class="input-hint">We'll send your order confirmation to this email</p>
+                                <label for="guest_email">Email Address</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-envelope input-icon"></i>
+                                    <input type="email" name="guest_email" id="guest_email" class="modern-input with-icon" required
+                                           placeholder="your.email@example.com">
+                                </div>
+                                <p class="input-hint">Order confirmation will be sent to this email.</p>
                             </div>
                         </div>
                     </div>
                     {% endif %}
-                    
+
                     <!-- Shipping Information -->
                     <div class="modern-form-card">
-                        <div class="form-card-header">
-                            <i class="fas fa-shipping-fast"></i>
-                            <h3>Shipping Information</h3>
+                        <div class="form-card-header-simple">
+                            <div class="header-icon"><i class="fas fa-map-marker-alt"></i></div>
+                            <h3>Shipping Address</h3>
                         </div>
                         <div class="form-card-body">
-                            <div class="modern-input-group">
-                                <label for="shipping_address">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    Delivery Address
-                                </label>
-                                <textarea name="shipping_address" id="shipping_address" required 
-                                        placeholder="Enter your complete shipping address&#10;Street, City, State, ZIP Code"></textarea>
+                            <div class="address-grid">
+                                <div class="modern-input-group full-width">
+                                    <label for="shipping_street">Street Address</label>
+                                    <div class="input-wrapper">
+                                        <input type="text" id="shipping_street" class="modern-input" required placeholder="123 Main St">
+                                    </div>
+                                </div>
+
+                                <div class="modern-input-group full-width">
+                                    <label for="shipping_apartment">Apt, Suite, Unit (Optional)</label>
+                                    <div class="input-wrapper">
+                                        <input type="text" id="shipping_apartment" class="modern-input" placeholder="Apt 4B">
+                                    </div>
+                                </div>
+
+                                <div class="address-row-3">
+                                    <div class="modern-input-group">
+                                        <label for="shipping_city">City</label>
+                                        <div class="input-wrapper">
+                                            <input type="text" id="shipping_city" class="modern-input" required placeholder="New York">
+                                        </div>
+                                    </div>
+
+                                    <div class="modern-input-group">
+                                        <label for="shipping_state">State</label>
+                                        <div class="input-wrapper">
+                                            <input type="text" id="shipping_state" class="modern-input" required placeholder="NY">
+                                        </div>
+                                    </div>
+
+                                    <div class="modern-input-group">
+                                        <label for="shipping_zip">ZIP Code</label>
+                                        <div class="input-wrapper">
+                                            <input type="text" id="shipping_zip" class="modern-input" required placeholder="10001">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Payment Information -->
                     <div class="modern-form-card">
-                        <div class="form-card-header">
-                            <i class="fas fa-credit-card"></i>
-                            <h3>Payment Information</h3>
+                        <div class="form-card-header-simple">
+                            <div class="header-icon"><i class="fas fa-credit-card"></i></div>
+                            <h3>Payment Details</h3>
+                            <div class="verified-badge">
+                                <i class="fas fa-shield-alt"></i> Verified Secure
+                            </div>
                         </div>
                         <div class="form-card-body">
-                            <div class="secure-badge">
+                            <div class="secure-payment-info">
                                 <i class="fas fa-lock"></i>
-                                <span>Secure Payment via Stripe</span>
+                                <span>All transactions are secure and encrypted.</span>
                             </div>
-                            <div id="card-element" class="modern-card-element">
-                                <!-- Stripe Card Element will be inserted here -->
+
+                            <div class="modern-input-group">
+                                <label for="card_name">Cardholder Name</label>
+                                <div class="input-wrapper">
+                                    <input type="text" id="card_name" class="modern-input" required placeholder="John Doe">
+                                </div>
+                            </div>
+
+                            <div class="modern-input-group">
+                                <label for="card-number-element">Card Number</label>
+                                <div id="card-number-element" class="modern-card-element"></div>
+                            </div>
+
+                            <div class="address-grid">
+                                <div class="modern-input-group">
+                                    <label for="card-expiry-element">Expiration Date</label>
+                                    <div id="card-expiry-element" class="modern-card-element"></div>
+                                </div>
+
+                                <div class="modern-input-group">
+                                    <label for="card-cvc-element">Security Code (CVC)</label>
+                                    <div id="card-cvc-element" class="modern-card-element"></div>
+                                </div>
                             </div>
                             <div id="card-errors" role="alert" class="modern-card-errors"></div>
                         </div>
                     </div>
-                    
+
                     <!-- Submit Button -->
-                    <button type="submit" id="submit-payment" class="modern-checkout-btn">
+                    <button type="submit" id="submit-payment" class="checkout-submit-btn">
                         <span id="button-text">
-                            <i class="fas fa-lock"></i>
                             Pay ${{ cart.get_total_price }}
                         </span>
                         <span id="spinner" class="spinner hidden"></span>
                     </button>
-                    
+
                     <div id="payment-message" class="payment-message hidden"></div>
                 </form>
             </div>
-            
+
             <!-- Order Summary Section -->
             <div class="checkout-summary-section">
                 <div class="modern-summary-card">
@@ -98,7 +166,7 @@
                         <i class="fas fa-receipt"></i>
                         <h3>Order Summary</h3>
                     </div>
-                    
+
                     <div class="summary-items">
                         {% for item in cart_items %}
                         <div class="summary-item">
@@ -115,12 +183,12 @@
                         </div>
                         {% endfor %}
                     </div>
-                    
+
                     <div class="summary-total">
                         <span>Total</span>
                         <span class="total-amount">${{ cart.get_total_price }}</span>
                     </div>
-                    
+
                     <div class="trust-badges">
                         <div class="trust-item">
                             <i class="fas fa-shield-alt"></i>
@@ -128,11 +196,11 @@
                         </div>
                         <div class="trust-item">
                             <i class="fas fa-truck"></i>
-                            <span>Fast Shipping</span>
+                            <span>Order tracking</span>
                         </div>
                         <div class="trust-item">
                             <i class="fas fa-undo"></i>
-                            <span>Easy Returns</span>
+                            <span>Guest checkout</span>
                         </div>
                     </div>
                 </div>
@@ -150,64 +218,98 @@ const stripe = Stripe('{{ stripe_public_key }}');
 
 // Create Payment Element
 const elements = stripe.elements({ clientSecret: '{{ client_secret }}' });
-const cardElement = elements.create('card', {
-    style: {
-        base: {
-            fontSize: '16px',
-            color: '#32325d',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-            '::placeholder': {
-                color: '#aab7c4'
-            }
-        },
-        invalid: {
-            color: '#fa755a',
-            iconColor: '#fa755a'
-        }
-    }
-});
-cardElement.mount('#card-element');
 
-// Handle card errors
-cardElement.on('change', function(event) {
-    const displayError = document.getElementById('card-errors');
-    if (event.error) {
-        displayError.textContent = event.error.message;
-    } else {
-        displayError.textContent = '';
+const style = {
+    base: {
+        fontSize: '16px',
+        color: '#32325d',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        '::placeholder': {
+            color: '#aab7c4'
+        }
+    },
+    invalid: {
+        color: '#fa755a',
+        iconColor: '#fa755a'
     }
+};
+
+// Create separate elements
+const cardNumber = elements.create('cardNumber', { style: style });
+cardNumber.mount('#card-number-element');
+
+const cardExpiry = elements.create('cardExpiry', { style: style });
+cardExpiry.mount('#card-expiry-element');
+
+const cardCvc = elements.create('cardCvc', { style: style });
+cardCvc.mount('#card-cvc-element');
+
+// Handle errors for all fields
+[cardNumber, cardExpiry, cardCvc].forEach(element => {
+    element.on('change', function(event) {
+        const displayError = document.getElementById('card-errors');
+        if (event.error) {
+            displayError.textContent = event.error.message;
+            displayError.style.display = 'block';
+        } else {
+            displayError.textContent = '';
+            displayError.style.display = 'none';
+        }
+    });
 });
 
 // Handle form submission
 const form = document.getElementById('payment-form');
 form.addEventListener('submit', async function(event) {
     event.preventDefault();
-    
+
     const submitButton = document.getElementById('submit-payment');
     const buttonText = document.getElementById('button-text');
     const spinner = document.getElementById('spinner');
-    
+
     // Disable button and show spinner
     submitButton.disabled = true;
     spinner.classList.remove('hidden');
     buttonText.classList.add('hidden');
-    
-    const shippingAddress = document.getElementById('shipping_address').value;
+
+    const street = document.getElementById('shipping_street').value;
+    const apartment = document.getElementById('shipping_apartment').value;
+    const city = document.getElementById('shipping_city').value;
+    const state = document.getElementById('shipping_state').value;
+    const zip = document.getElementById('shipping_zip').value;
+    const cardName = document.getElementById('card_name').value;
+
+    let shippingAddress = street;
+    if (apartment) shippingAddress += `\n${apartment}`;
+    shippingAddress += `\n${city}, ${state} ${zip}`;
+
     const guestEmailField = document.getElementById('guest_email');
     const guestEmail = guestEmailField ? guestEmailField.value : '';
-    
+
+    try {
+    // Save the order before Stripe can charge; webhooks can finish it independently.
+    const prepared = await fetch('{% url "shop:prepare_payment" %}', {
+        method: 'POST', headers: {'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}'},
+        body: JSON.stringify({payment_intent_id: '{{ payment_intent_id }}', shipping_address: shippingAddress, guest_email: guestEmail})
+    });
+    const preparation = await prepared.json();
+    if (!prepared.ok || !preparation.success) throw new Error(preparation.message || 'Unable to prepare checkout.');
     // Confirm the payment
     const {error, paymentIntent} = await stripe.confirmCardPayment('{{ client_secret }}', {
         payment_method: {
-            card: cardElement,
+            card: cardNumber,
+            billing_details: {
+                name: cardName,
+                email: guestEmail
+            }
         }
     });
-    
+
     if (error) {
         // Show error to customer
         const errorElement = document.getElementById('card-errors');
         errorElement.textContent = error.message;
-        
+
         // Re-enable button
         submitButton.disabled = false;
         spinner.classList.add('hidden');
@@ -228,9 +330,9 @@ form.addEventListener('submit', async function(event) {
                         guest_email: guestEmail
                     })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (data.success) {
                     // Redirect to success page
                     if (data.is_guest) {
@@ -244,11 +346,19 @@ form.addEventListener('submit', async function(event) {
             } catch (err) {
                 const errorElement = document.getElementById('card-errors');
                 errorElement.textContent = 'Payment succeeded but order creation failed: ' + err.message;
-                submitButton.disabled = false;
+                submitButton.disabled = true;
                 spinner.classList.add('hidden');
                 buttonText.classList.remove('hidden');
             }
+        } else {
+            throw new Error('Payment is still pending. Check your order status before retrying.');
         }
+    }
+    } catch (err) {
+        document.getElementById('card-errors').textContent = err.message || 'Unable to complete checkout. Please check your orders.';
+        submitButton.disabled = false;
+        spinner.classList.add('hidden');
+        buttonText.classList.remove('hidden');
     }
 });
 </script>

@@ -1,0 +1,15 @@
+{% load static %}
+<article class="order-summary-card">
+  <header class="order-summary-heading"><div><p class="eyebrow">{{ order.created_at|date:'F j, Y' }}</p><h2>Order #{{ order.pk }}</h2></div><span class="order-state">{{ order.get_status_display }}</span></header>
+  <div class="order-facts"><p>Payment <strong>{{ order.get_payment_status_display }}</strong></p><p>Total <strong>${{ order.total_amount }}</strong></p></div>
+  <div class="order-lines">
+    {% for item in order.items.all %}
+    <div class="order-line">
+      {% if item.product.image %}<img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" width="64" height="64">{% else %}<img src="{% static 'images/placeholder.svg' %}" alt="{{ item.product.name }}" width="64" height="64">{% endif %}
+      <div><h3>{{ item.product.name }}</h3><p>Size {{ item.size }} · Qty {{ item.quantity }} · ${{ item.price }} each</p></div><strong>${{ item.get_total_price }}</strong>
+    </div>
+    {% endfor %}
+  </div>
+  {% if order.shipping_address %}<div class="order-address"><h3>Delivery address</h3><p>{{ order.shipping_address|linebreaksbr }}</p></div>{% endif %}
+  {% if order.tracking_number %}<div class="order-address"><h3>Package tracking</h3>{% if order.tracking_url %}<a href="{{ order.tracking_url }}" target="_blank" rel="noopener noreferrer">{{ order.tracking_number }} ↗</a>{% else %}<p>{{ order.tracking_number }}</p>{% endif %}</div>{% endif %}
+</article>

@@ -13,11 +13,11 @@
                 Home
             </a>
             <i class="fas fa-chevron-right"></i>
-            <a href="{% url 'shop:index' %}">{{ product.category.name }}</a>
+            <a href="{% url 'shop:index' %}?category={{ product.category.slug }}#products">{{ product.category.name }}</a>
             <i class="fas fa-chevron-right"></i>
             <span>{{ product.name }}</span>
         </nav>
-        
+
         <!-- Product Detail Section -->
         <div class="product-detail-container">
             <!-- Product Image -->
@@ -26,40 +26,44 @@
                     {% if product.image %}
                         <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-main-image">
                     {% else %}
-                        <img src="{% static 'images/placeholder.jpg' %}" alt="{{ product.name }}" class="product-main-image">
+                        <img src="{% static 'images/placeholder.svg' %}" alt="{{ product.name }}" class="product-main-image">
                     {% endif %}
                 </div>
             </div>
-            
+
             <!-- Product Info -->
             <div class="product-info-section">
                 <div class="product-header">
                     <span class="product-category-badge">{{ product.category.name }}</span>
                     <h1 class="product-title">{{ product.name }}</h1>
                 </div>
-                
+
                 <!-- Price Badge -->
                 <div class="product-price-badge">
                     <span class="price-label">Price</span>
                     <span class="price-amount">${{ product.price }}</span>
+                    <span class="price-note">USD</span>
                 </div>
-                
+
                 <!-- Description -->
                 <div class="product-description-box">
                     <h3><i class="fas fa-info-circle"></i> Description</h3>
                     <p>{{ product.description }}</p>
                 </div>
-                
-                <!-- Add to Cart Form -->
+
+                <!-- Add to bag Form -->
                 <form class="modern-cart-form" onsubmit="addToCart(event)">
                     <input type="hidden" name="product_id" value="{{ product.id }}">
-                    
+
                     <!-- Size Selector -->
                     <div class="form-section">
-                        <label class="form-label">
-                            <i class="fas fa-ruler"></i>
-                            Select Size
-                        </label>
+                        <div class="form-label-row">
+                            <label class="form-label">
+                                <i class="fas fa-ruler"></i>
+                                Select Size
+                            </label>
+                            <a href="#fit-help" class="size-guide-link">Fit &amp; care</a>
+                        </div>
                         <div class="size-buttons">
                             {% for size in sizes %}
                                 <button type="button" class="size-btn" data-size="{{ size }}" onclick="selectSize(this, '{{ size }}')">
@@ -69,7 +73,7 @@
                         </div>
                         <input type="hidden" name="size" id="size" required>
                     </div>
-                    
+
                     <!-- Quantity Selector -->
                     <div class="form-section">
                         <label class="form-label">
@@ -77,16 +81,16 @@
                             Quantity
                         </label>
                         <div class="modern-quantity-controls">
-                            <button type="button" class="qty-btn" onclick="decreaseQuantity()">
+                            <button type="button" class="product-qty-btn" aria-label="Decrease quantity" onclick="decreaseQuantity()">
                                 <i class="fas fa-minus"></i>
                             </button>
                             <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ product.stock }}" readonly>
-                            <button type="button" class="qty-btn" onclick="increaseQuantity()">
+                            <button type="button" class="product-qty-btn" aria-label="Increase quantity" onclick="increaseQuantity()">
                                 <i class="fas fa-plus"></i>
                             </button>
                         </div>
                     </div>
-                    
+
                     <!-- Stock Info -->
                     <div class="stock-indicator">
                         {% if product.stock > 10 %}
@@ -106,13 +110,14 @@
                             </span>
                         {% endif %}
                     </div>
-                    
-                    <!-- Add to Cart Button -->
+
+                    <!-- Add to bag Button -->
                     <button type="submit" class="modern-add-to-cart-btn" {% if product.stock == 0 %}disabled{% endif %}>
                         <i class="fas fa-shopping-cart"></i>
-                        Add to Cart
+                        Add to bag
                     </button>
                 </form>
+                <details id="fit-help"><summary>Fit &amp; care</summary><p>Available sizes: {{ sizes|join:', ' }}. Check the product description for fabric details and follow the garment care label. Detailed measurements will be added when available.</p></details>
             </div>
         </div>
     </div>
@@ -127,11 +132,13 @@ function selectSize(button, size) {
     // Remove selected class from all buttons
     document.querySelectorAll('.size-btn').forEach(btn => {
         btn.classList.remove('selected');
+        btn.setAttribute('aria-pressed', 'false');
     });
-    
+
     // Add selected class to clicked button
     button.classList.add('selected');
-    
+    button.setAttribute('aria-pressed', 'true');
+
     // Set hidden input value
     document.getElementById('size').value = size;
 }
@@ -141,7 +148,7 @@ function increaseQuantity() {
     const quantityInput = document.getElementById('quantity');
     const currentValue = parseInt(quantityInput.value);
     const maxValue = parseInt(quantityInput.max);
-    
+
     if (currentValue < maxValue) {
         quantityInput.value = currentValue + 1;
     }
@@ -150,7 +157,7 @@ function increaseQuantity() {
 function decreaseQuantity() {
     const quantityInput = document.getElementById('quantity');
     const currentValue = parseInt(quantityInput.value);
-    
+
     if (currentValue > 1) {
         quantityInput.value = currentValue - 1;
     }

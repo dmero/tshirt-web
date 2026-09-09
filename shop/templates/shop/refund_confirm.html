@@ -1,0 +1,5 @@
+{% extends 'registration/account_base.html' %}
+{% block title %}Confirm refund - T-Shirt Shop{% endblock %}
+{% block account_content %}<h1 id="account-title">Confirm your refund.</h1><p>Refund order #{{ order.pk }} for <strong>${{ order.total_amount }}</strong> to the original payment method.</p>
+<form method="post">{% csrf_token %}<button class="shop-button" type="submit">Confirm refund</button></form><a class="account-back" href="{% url 'shop:my_orders' %}">Keep order and go back</a>
+{% endblock %}

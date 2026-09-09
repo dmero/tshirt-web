@@ -1,6 +1,6 @@
 YOUR ORDER HAS BEEN DELIVERED!
 
-Hi {{ order.customer.user.first_name|default:order.customer.user.username }},
+Hi {% if order.customer.user %}{{ order.customer.user.first_name|default:order.customer.user.username }}{% else %}there{% endif %},
 
 Your order has been successfully delivered! We hope you love your new items.
 
@@ -26,7 +26,7 @@ DELIVERED TO
 HOW WAS YOUR EXPERIENCE?
 =========================
 We'd love to hear your feedback!
-Visit: {{ site_url }}/my-orders/
+Visit: {{ site_url }}/order-success/{{ order.pk }}/?token={{ order.order_lookup_token }}
 
 NEED HELP?
 ==========

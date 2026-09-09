@@ -1,6 +1,6 @@
 ORDER CONFIRMED!
 
-Hi {{ order.customer.user.first_name|default:order.customer.user.username }},
+Hi {% if order.customer.user %}{{ order.customer.user.first_name|default:order.customer.user.username }}{% else %}there{% endif %},
 
 Thank you for your order! We've received your payment and are processing your order.
 
@@ -23,7 +23,7 @@ SHIPPING ADDRESS
 ================
 {{ order.shipping_address }}
 
-You can track your order status by visiting: {{ site_url }}/my-orders/
+You can track your order status by visiting: {{ site_url }}/order-success/{{ order.pk }}/?token={{ order.order_lookup_token }}
 
 If you have any questions, please don't hesitate to contact us.
 

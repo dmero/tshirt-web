@@ -1,7 +1,7 @@
 {% extends 'shop/base.html' %}
 {% load static %}
 
-{% block title %}Shopping Cart - T-Shirt Shop{% endblock %}
+{% block title %}Shopping bag - T-Shirt Shop{% endblock %}
 
 {% block content %}
 <div class="cart-page-wrapper">
@@ -11,10 +11,10 @@
             <div class="cart-header-icon">
                 <i class="fas fa-shopping-cart"></i>
             </div>
-            <h1>Shopping Cart</h1>
+            <h1>Shopping bag</h1>
             <p class="cart-subtitle">Review your items before checkout</p>
         </div>
-        
+
         {% if cart_items %}
             <div class="cart-container">
                 <!-- Cart Items Section -->
@@ -26,10 +26,10 @@
                             {% if item.product.image %}
                                 <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
                             {% else %}
-                                <img src="{% static 'images/placeholder.jpg' %}" alt="{{ item.product.name }}">
+                                <img src="{% static 'images/placeholder.svg' %}" alt="{{ item.product.name }}">
                             {% endif %}
                         </div>
-                        
+
                         <!-- Product Info -->
                         <div class="cart-item-info">
                             <h3 class="product-name">{{ item.product.name }}</h3>
@@ -43,27 +43,27 @@
                                 </span>
                             </div>
                         </div>
-                        
+
                         <!-- Quantity Controls -->
                         <div class="cart-quantity-section">
                             <label>Quantity</label>
                             <div class="modern-qty-controls">
-                                <button class="qty-btn" onclick="updateCartItemQuantity({{ item.id }}, {{ item.quantity }} - 1)">
+                                <button class="qty-btn" aria-label="Decrease quantity" onclick="updateCartItemQuantity({{ item.id }}, {{ item.quantity }} - 1)">
                                     <i class="fas fa-minus"></i>
                                 </button>
                                 <span class="qty-display">{{ item.quantity }}</span>
-                                <button class="qty-btn" onclick="updateCartItemQuantity({{ item.id }}, {{ item.quantity }} + 1)">
+                                <button class="qty-btn" aria-label="Increase quantity" onclick="updateCartItemQuantity({{ item.id }}, {{ item.quantity }} + 1)">
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </div>
                         </div>
-                        
+
                         <!-- Item Total -->
                         <div class="cart-item-total">
                             <label>Total</label>
                             <span class="total-price">${{ item.get_total_price }}</span>
                         </div>
-                        
+
                         <!-- Remove Button -->
                         <button class="modern-remove-btn" onclick="removeCartItem({{ item.id }})" title="Remove item">
                             <i class="fas fa-trash-alt"></i>
@@ -71,7 +71,7 @@
                     </div>
                     {% endfor %}
                 </div>
-                
+
                 <!-- Cart Summary Section -->
                 <div class="cart-summary-section">
                     <div class="modern-cart-summary">
@@ -80,11 +80,11 @@
                             <i class="fas fa-receipt"></i>
                             <h3>Order Summary</h3>
                         </div>
-                        
+
                         <!-- Summary Details -->
                         <div class="summary-body">
                             <div class="summary-row">
-                                <span class="label">Items ({{ cart_items.count }})</span>
+                                <span class="label">Items ({{ cart.get_total_items }})</span>
                                 <span class="value">${{ cart.get_total_price }}</span>
                             </div>
                             <div class="summary-row">
@@ -97,19 +97,19 @@
                                 <span class="value total-value">${{ cart.get_total_price }}</span>
                             </div>
                         </div>
-                        
+
                         <!-- Checkout Button -->
-                        <a href="{% url 'shop:checkout' %}" class="modern-checkout-btn">
+                        <a href="{% url 'shop:checkout' %}" class="cart-checkout-btn">
                             <i class="fas fa-lock"></i>
                             Proceed to Checkout
                         </a>
-                        
+
                         <!-- Continue Shopping Link -->
                         <a href="{% url 'shop:index' %}" class="continue-shopping">
                             <i class="fas fa-arrow-left"></i>
                             Continue Shopping
                         </a>
-                        
+
                         <!-- Trust Badges -->
                         <div class="cart-trust-badges">
                             <div class="trust-item">
@@ -130,8 +130,8 @@
                 <div class="empty-cart-icon">
                     <i class="fas fa-shopping-cart"></i>
                 </div>
-                <h2>Your Cart is Empty</h2>
-                <p>Looks like you haven't added any items to your cart yet.</p>
+                <h2>Your bag is empty.</h2>
+                <p>Find your next favorite in the collection.</p>
                 <a href="{% url 'shop:index' %}" class="browse-products-btn">
                     <i class="fas fa-tshirt"></i>
                     Browse Products

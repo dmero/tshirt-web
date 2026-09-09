@@ -761,12 +761,14 @@ a:hover {
 
 /* Modern Sidebar Cart Items */
 .modern-sidebar-item {
-    display: flex;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-md);
+    padding: 1.25rem;
+    gap: 1rem;
     border-bottom: 1px solid var(--gray-light);
     transition: all var(--transition-fast);
     background: white;
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    align-items: start;
 }
 
 .modern-sidebar-item:hover {
@@ -774,8 +776,9 @@ a:hover {
 }
 
 .modern-sidebar-item .sidebar-item-image {
-    width: 70px;
-    height: 70px;
+    grid-row: 1 / 3;
+    width: 90px;
+    height: 90px;
     border-radius: var(--radius-md);
     overflow: hidden;
     flex-shrink: 0;
@@ -789,7 +792,9 @@ a:hover {
 }
 
 .sidebar-item-details {
-    flex: 1;
+    grid-column: 2;
+    grid-row: 1;
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
@@ -797,21 +802,21 @@ a:hover {
 }
 
 .sidebar-item-name {
-    font-size: 0.95rem;
+    font-size: 1.05rem;
     font-weight: 600;
     color: var(--dark);
     margin: 0;
     font-family: var(--font-body);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    line-height: 1.3;
+    margin-bottom: 0.25rem;
 }
 
 .sidebar-item-size {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: var(--gray-medium);
     background: var(--light);
     padding: 0.15rem 0.5rem;
@@ -820,21 +825,25 @@ a:hover {
 }
 
 .sidebar-item-size i {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
 }
 
 .sidebar-item-price {
-    font-size: 0.95rem;
+    font-size: 1.05rem;
     font-weight: 700;
     color: var(--secondary-color);
+    margin-top: 0.25rem;
 }
 
 .sidebar-item-actions {
+    grid-column: 2;
+    grid-row: 2;
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    align-items: flex-end;
+    flex-direction: row;
+    width: 100%;
     justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
 }
 
 .sidebar-qty-controls {
@@ -877,8 +886,8 @@ a:hover {
 }
 
 .sidebar-remove-btn {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border: none;
     background: #fee;
     color: #dc3545;
@@ -1146,6 +1155,15 @@ a:hover {
     
     .nav-logo a {
         font-size: 1.5rem;
+    }
+
+    /* Fix for mobile cart sidebar */
+    .cart-footer {
+        padding-bottom: 120px; /* Ensure button is above browser bottom bar */
+    }
+
+    .cart-items {
+        padding-top: 0; /* Reduce top spacing */
     }
 }
 
@@ -1897,54 +1915,56 @@ a:hover {
 }
 
 .product-header {
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-sm);
 }
 
 .product-category-badge {
     display: inline-block;
-    background: var(--gradient-primary);
+    background: var(--primary-color);
     color: white;
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-md);
-    font-size: 0.875rem;
-    font-weight: 600;
+    padding: 0.35rem 0.85rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
     margin-bottom: var(--spacing-sm);
+    box-shadow: var(--shadow-sm);
 }
 
 .product-title {
     font-family: var(--font-heading);
-    font-size: 2.5rem;
+    font-size: 3rem;
     color: var(--dark);
     margin: 0;
-    line-height: 1.2;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
 }
 
-/* Price Badge */
+/* Price Display (Refined) */
 .product-price-badge {
-    display: inline-flex;
-    flex-direction: column;
-    background: linear-gradient(135deg, #C05746 0%, #F4A259 100%);
-    padding: 1rem 2rem;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-    margin: var(--spacing-lg) 0;
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: var(--spacing-md);
 }
 
 .price-label {
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.9);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 0.25rem;
+    display: none; /* Removed redundant label */
 }
 
 .price-amount {
     font-size: 2.5rem;
-    font-weight: 700;
-    color: white;
-    font-family: var(--font-heading);
+    font-weight: 800;
+    color: var(--secondary-color);
+    font-family: var(--font-body);
+    letter-spacing: -1px;
+}
+
+.price-note {
+    font-size: 0.9rem;
+    color: var(--gray-medium);
+    font-weight: 500;
 }
 
 /* Description Box */
@@ -1969,6 +1989,128 @@ a:hover {
     color: var(--gray-medium);
     line-height: 1.6;
     margin: 0;
+}
+
+/* Product Features Section */
+.product-features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 2rem 0;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--gray-light);
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.feature-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+}
+
+.feature-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+.feature-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.feature-text strong {
+    font-size: 0.85rem;
+    color: var(--dark);
+}
+
+.feature-text span {
+    font-size: 0.75rem;
+    color: var(--gray-medium);
+}
+
+/* Size Guide Link */
+.form-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.form-label-row .form-label {
+    margin-bottom: 0;
+}
+
+.size-guide-link {
+    font-size: 0.85rem;
+    color: var(--gray-medium);
+    text-decoration: underline;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.size-guide-link:hover {
+    color: var(--primary-color);
+}
+
+/* Share Section */
+.share-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--gray-light);
+}
+
+.share-section span {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--dark);
+}
+
+.share-icons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.share-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.9rem;
+    transition: all var(--transition-fast);
+}
+
+.share-icon:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.share-icon.facebook { background-color: #3b5998; }
+.share-icon.twitter { background-color: #1da1f2; }
+.share-icon.pinterest { background-color: #bd081c; }
+
+/* Image Hover Zoom (Subtle) */
+.product-main-image {
+    transition: transform 0.5s ease;
+}
+
+.product-image-wrapper:hover .product-main-image {
+    transform: scale(1.03);
 }
 
 /* Modern Cart Form */
@@ -2669,6 +2811,11 @@ a:hover {
     .modern-cart-item {
         padding: var(--spacing-md);
     }
+
+    /* Fix for mobile browser bottom bar obscuring content */
+    .cart-page-wrapper {
+        padding-bottom: 150px;
+    }
 }
 
 /* =======================================
@@ -2716,6 +2863,183 @@ a:hover {
     font-size: 1.1rem;
 }
 
+/* Checkout Progress */
+.checkout-progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 600px;
+    margin: 0 auto var(--spacing-lg);
+}
+
+.checkout-progress .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.step-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--gray-light);
+    color: var(--gray-medium);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: all var(--transition-base);
+}
+
+.checkout-progress .step.active .step-icon {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 0 0 4px rgba(30, 37, 74, 0.1);
+}
+
+.checkout-progress .step.completed .step-icon {
+    background: var(--success-color);
+    color: white;
+}
+
+.checkout-progress .step span {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--gray-medium);
+}
+
+.checkout-progress .step.active span {
+    color: var(--primary-color);
+}
+
+.checkout-progress .step-line {
+    flex: 1;
+    height: 2px;
+    background: var(--gray-light);
+    margin: 0 10px 25px;
+}
+
+.checkout-progress .step-line.completed {
+    background: var(--success-color);
+}
+
+/* Simple Form Header */
+.form-card-header-simple {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--gray-light);
+    background: white;
+}
+
+.header-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+}
+
+.form-card-header-simple h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--dark);
+    flex: 1;
+}
+
+/* Input with Icon Wrapper */
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper .input-icon {
+    position: absolute;
+    left: 1rem;
+    color: var(--gray-medium);
+    font-size: 1rem;
+    pointer-events: none;
+}
+
+.modern-input-group input[type="email"],
+.modern-input-group textarea {
+    padding-left: 3rem !important; /* Space for icon */
+}
+
+.modern-input-group textarea {
+    padding-left: 1rem !important; /* No icon for textarea usually */
+}
+
+.address-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.address-row-3 {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 1rem;
+}
+
+@media (max-width: 576px) {
+    .address-row-3 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Verified Badge */
+.verified-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--success-color);
+    background: rgba(92, 184, 92, 0.1);
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    font-weight: 600;
+}
+
+/* Secure Payment Info */
+.secure-payment-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--gray-medium);
+}
+
+.secure-payment-info i {
+    color: var(--success-color);
+}
+
+.card-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--dark);
+}
+
 /* Checkout Container */
 .checkout-container {
     display: grid;
@@ -2728,7 +3052,7 @@ a:hover {
 .checkout-form-section {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg);
+    gap: 1.5rem;
 }
 
 .modern-form-card {
@@ -2738,88 +3062,74 @@ a:hover {
     overflow: hidden;
 }
 
-.form-card-header {
+.form-card-header-simple {
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm);
-    padding: var(--spacing-md) var(--spacing-lg);
-    background: linear-gradient(135deg, #2D3561 0%, #1A1A2E 100%);
-    color: white;
-}
-
-.form-card-header i {
-    font-size: 1.5rem;
-    color: #F4A259;
-}
-
-.form-card-header h3 {
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 600;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--gray-light);
+    background: white;
 }
 
 .form-card-body {
-    padding: var(--spacing-lg);
+    padding: 1.5rem;
 }
 
-/* Modern Input Group */
+/* Unified Input Styles */
+.modern-input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--gray-light);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    font-family: var(--font-body);
+    transition: all var(--transition-fast);
+    height: 50px; /* Fixed height for consistency */
+}
+
+.modern-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(45, 53, 97, 0.1);
+}
+
+/* Input with Icon Wrapper */
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper .input-icon {
+    position: absolute;
+    left: 1rem;
+    color: var(--gray-medium);
+    font-size: 1rem;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Specific padding for inputs with icons */
+.modern-input.with-icon {
+    padding-left: 3rem;
+}
+
 .modern-input-group {
     margin-bottom: 0;
 }
 
 .modern-input-group label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    display: block;
+    margin-bottom: 0.5rem;
     font-weight: 600;
-    color: var(--primary-color);
-    margin-bottom: var(--spacing-sm);
-    font-size: 1rem;
-}
-
-.modern-input-group label i {
     font-size: 0.9rem;
-}
-
-.modern-input-group textarea {
-    width: 100%;
-    min-height: 120px;
-    padding: var(--spacing-md);
-    border: 2px solid var(--gray-light);
-    border-radius: var(--radius-md);
-    font-size: 1rem;
-    font-family: var(--font-body);
-    transition: all var(--transition-fast);
-    resize: vertical;
-}
-
-.modern-input-group input[type="email"] {
-    width: 100%;
-    padding: var(--spacing-md);
-    border: 2px solid var(--gray-light);
-    border-radius: var(--radius-md);
-    font-size: 1rem;
-    font-family: var(--font-body);
-    transition: all var(--transition-fast);
-}
-
-.modern-input-group input[type="email"]:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 4px rgba(45, 53, 97, 0.1);
-}
-
-.modern-input-group textarea:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 4px rgba(45, 53, 97, 0.1);
+    color: var(--dark);
 }
 
 .input-hint {
-    margin-top: var(--spacing-xs);
-    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
     color: var(--gray-medium);
-    font-style: italic;
 }
 
 /* Secure Badge */
@@ -2842,11 +3152,14 @@ a:hover {
 
 /* Modern Card Element */
 .modern-card-element {
-    padding: var(--spacing-md);
+    padding: 0.875rem 1rem;
     border: 2px solid var(--gray-light);
     border-radius: var(--radius-md);
     background: white;
     transition: all var(--transition-fast);
+    min-height: 50px;
+    display: flex;
+    align-items: center;
 }
 
 .modern-card-element:focus-within {

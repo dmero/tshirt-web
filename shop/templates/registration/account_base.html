@@ -1,0 +1,13 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'css/account.css' %}?v=2">{% endblock %}
+{% block content %}
+<section class="account-page container" aria-labelledby="account-title">
+  <div class="account-card">
+    <div class="account-symbol" aria-hidden="true">{% block account_icon %}<i class="fas fa-lock"></i>{% endblock %}</div>
+    <p class="eyebrow">YOUR T-SHIRT SHOP ACCOUNT</p>
+    {% block account_content %}{% endblock %}
+  </div>
+  <p class="account-footnote">{% block account_note %}Your favorites, all in one place.{% endblock %}</p>
+</section>
+{% endblock %}

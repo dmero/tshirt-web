@@ -1,6 +1,6 @@
 REFUND PROCESSED
 
-Hi {{ order.customer.user.first_name|default:order.customer.user.username }},
+Hi {% if order.customer.user %}{{ order.customer.user.first_name|default:order.customer.user.username }}{% else %}there{% endif %},
 
 Your refund has been processed successfully.
 

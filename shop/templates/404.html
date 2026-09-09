@@ -1,0 +1,7 @@
+{% extends 'registration/account_base.html' %}
+{% block title %}404 - T-Shirt Shop{% endblock %}
+{% block account_content %}
+<h1 id="account-title">This page wandered off.</h1><p>The page may have moved or the link may be out of date.</p>
+<a class="shop-button" href="{% url 'shop:index' %}">Back to the shop</a>
+<a class="account-back" href="{% url 'shop:guest_order_lookup' %}">Track an order</a>
+{% endblock %}

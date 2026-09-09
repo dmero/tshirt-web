@@ -1,0 +1,11 @@
+.git
+.venv
+venv
+.env
+*.sqlite3
+media
+staticfiles
+__pycache__
+*.pyc
+test_stripe.py
+tshirt_shop.txt

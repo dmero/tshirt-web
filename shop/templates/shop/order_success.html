@@ -1,92 +1,9 @@
 {% extends 'shop/base.html' %}
-{% load static %}
-
-{% block title %}Order Confirmed - T-Shirt Shop{% endblock %}
-
+{% block title %}Order #{{ order.pk }} - T-Shirt Shop{% endblock %}
 {% block content %}
-<div class="container">
-    <div class="success-page">
-        <div class="success-icon">
-            <i class="fas fa-check-circle"></i>
-        </div>
-        <h1>Order Confirmed!</h1>
-        <p>Thank you for your order. Your order number is <strong>#{{ order.id }}</strong></p>
-        <p>You will receive an email confirmation shortly{% if order.guest_email %} at <strong>{{ order.guest_email }}</strong>{% endif %}.</p>
-        
-        {% if order.is_guest_order %}
-        <div class="guest-info-box">
-            <i class="fas fa-info-circle"></i>
-            <div>
-                <strong>Track Your Order:</strong>
-                <p>Save your order number <strong>#{{ order.id }}</strong> and use your email address to track your order status at any time.</p>
-                <a href="{% url 'shop:guest_order_lookup' %}" class="track-link">
-                    <i class="fas fa-search"></i> Track Order
-                </a>
-            </div>
-        </div>
-        {% endif %}
-        
-        <div class="order-details">
-            <h3>Order Details</h3>
-            <p><strong>Order ID:</strong> #{{ order.id }}</p>
-            <p><strong>Total Amount:</strong> ${{ order.total_amount }}</p>
-            <p><strong>Status:</strong> {{ order.get_status_display }}</p>
-            {% if order.guest_email %}
-            <p><strong>Email:</strong> {{ order.guest_email }}</p>
-            {% endif %}
-        </div>
-        
-        <a href="{% url 'shop:index' %}" class="btn-primary">Continue Shopping</a>
-    </div>
-</div>
-
-<style>
-.guest-info-box {
-    background: #d1ecf1;
-    border: 2px solid #bee5eb;
-    border-radius: var(--radius-md);
-    padding: var(--spacing-lg);
-    margin: var(--spacing-lg) 0;
-    display: flex;
-    gap: var(--spacing-md);
-    align-items: flex-start;
-}
-
-.guest-info-box i {
-    font-size: 2rem;
-    color: #0c5460;
-    flex-shrink: 0;
-}
-
-.guest-info-box strong {
-    color: #0c5460;
-    font-size: 1.1rem;
-    display: block;
-    margin-bottom: var(--spacing-xs);
-}
-
-.guest-info-box p {
-    margin: var(--spacing-sm) 0;
-    color: #0c5460;
-}
-
-.track-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: #0c5460;
-    color: white;
-    text-decoration: none;
-    border-radius: var(--radius-sm);
-    font-weight: 600;
-    margin-top: var(--spacing-sm);
-    transition: all var(--transition-fast);
-}
-
-.track-link:hover {
-    background: #084248;
-    transform: translateY(-1px);
-}
-</style>
+<section class="shop-page narrow container"><header class="shop-page-heading"><p class="eyebrow">THANK YOU FOR SHOPPING WITH US</p><h1>{% if order.payment_status == 'completed' %}Order received.{% else %}Your order status.{% endif %}</h1><p>Save order number #{{ order.pk }} for your records.</p></header>
+{% if order.payment_status == 'pending' %}<p class="order-note">We are waiting for payment confirmation. Check this page again before placing another order.</p>{% endif %}
+{% include 'shop/order_summary.html' %}
+<div class="shop-actions"><a class="shop-button" href="{% url 'shop:index' %}">Continue shopping</a>{% if order.is_guest_order %}<a href="{% url 'shop:guest_order_lookup' %}">Track your order</a>{% else %}<a href="{% url 'shop:my_orders' %}">View all orders</a>{% endif %}</div>
+</section>
 {% endblock %}

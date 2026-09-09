@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Find your everyday favorite. Explore casual essentials, sports tees, graphic designs and vintage styles at T-Shirt Shop.">
     <meta name="csrf-token" content="{{ csrf_token }}">
     <title>{% block title %}T-Shirt Shop{% endblock %}</title>
     {% load static %}
@@ -12,8 +13,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="{% static 'css/style.css' %}?v=5.1" rel="stylesheet">
+    <link href="{% static 'css/storefront.css' %}?v=3" rel="stylesheet">
+{% block extra_head %}{% endblock %}
+    <link href="{% static 'css/pages.css' %}?v=3" rel="stylesheet">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to content</a>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
@@ -24,11 +29,11 @@
                 </a>
             </div>
             <!-- Hamburger toggle for mobile -->
-            <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle navigation">
+            <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navigation-menu">
                 <i class="fas fa-bars"></i>
             </button>
-            
-            <div class="nav-menu">
+
+            <div class="nav-menu" id="navigation-menu">
                 <a href="{% url 'shop:index' %}" class="nav-link">Home</a>
                 {% if user.is_authenticated %}
                     <a href="{% url 'shop:my_orders' %}" class="nav-link">My Orders</a>
@@ -39,12 +44,12 @@
                     <span class="nav-link">Hello, {{ user.first_name|default:user.username }}</span>
                 {% else %}
                     <a href="{% url 'shop:guest_order_lookup' %}" class="nav-link">Track Order</a>
-                    <a href="{% url 'login' %}" class="nav-link">Login</a>
-                    <a href="{% url 'shop:signup' %}" class="nav-link">Sign Up</a>
+                    <a href="{% url 'login' %}" class="nav-link">Sign in</a>
+                    <a href="{% url 'shop:signup' %}" class="nav-link">Create account</a>
                 {% endif %}
-                
+
                 <!-- Cart Icon -->
-                <button class="cart-btn" onclick="toggleCart()">
+                <button class="cart-btn" onclick="toggleCart()" aria-label="Open shopping bag" aria-expanded="false" aria-controls="cart-sidebar">
                     <i class="fas fa-shopping-cart"></i>
                     <span class="cart-count" id="cart-count">0</span>
                 </button>
@@ -53,22 +58,23 @@
     </nav>
 
     <!-- Cart Sidebar -->
-    <div class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-sidebar" id="cart-sidebar" role="dialog" aria-modal="true" aria-label="Shopping bag" aria-hidden="true" inert>
         <div class="cart-header">
-            <h3>Shopping Cart</h3>
-            <button class="close-cart" onclick="toggleCart()">
+            <h3>Shopping bag</h3>
+            <button class="close-cart" onclick="toggleCart()" aria-label="Close shopping bag">
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        
+
         <div class="cart-items" id="cart-items">
             <div class="empty-cart" id="empty-cart">
                 <i class="fas fa-shopping-cart"></i>
-                <p>Your cart is empty</p>
+                <p>Your bag is empty</p>
             </div>
         </div>
-        
+
         <div class="cart-footer" id="cart-footer" style="display: none;">
+            <a href="{% url 'shop:cart' %}">View and edit your bag</a>
             <div class="cart-total">
                 <strong>Total: $<span id="cart-total">0.00</span></strong>
             </div>
@@ -80,12 +86,12 @@
 
     <!-- Cart Overlay -->
     <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
-    
+
     <!-- Mobile Menu Overlay -->
     <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
 
     <!-- Main Content -->
-    <main class="main-content">
+    <main class="main-content" id="main-content">
         {% if messages %}
             <div class="messages">
                 {% for message in messages %}
@@ -95,7 +101,7 @@
                 {% endfor %}
             </div>
         {% endif %}
-        
+
         {% block content %}
         {% endblock %}
     </main>
@@ -109,53 +115,21 @@
             </div>
             <div class="footer-section">
                 <h4>Customer Service</h4>
-                <a href="#">Contact Us</a>
-                <a href="#">Shipping Info</a>
-                <a href="#">Returns</a>
+                <a href="{% url 'shop:guest_order_lookup' %}">Track your order</a>
+                <a href="{% url 'shop:cart' %}">Your shopping bag</a>
             </div>
             <div class="footer-section">
-                <h4>Follow Us</h4>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                </div>
+                <h4>Your Account</h4>
+                <a href="{% url 'login' %}">Sign in</a>
+                <a href="{% url 'shop:my_orders' %}">Order history</a>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 T-Shirt Shop. All rights reserved.</p>
+            <p>&copy; {% now 'Y' %} T-Shirt Shop. All rights reserved.</p>
         </div>
     </footer>
 
-    <script src="{% static 'js/cart.js' %}?v=3.1"></script>
-    <script>
-        // Mobile menu toggle function
-        window.toggleMenu = function() {
-            const navMenu = document.querySelector('.nav-menu');
-            const menuToggle = document.querySelector('.menu-toggle');
-            const mobileOverlay = document.getElementById('mobile-menu-overlay');
-            const body = document.body;
-            
-            if (navMenu) navMenu.classList.toggle('active');
-            if (menuToggle) menuToggle.classList.toggle('active');
-            if (mobileOverlay) mobileOverlay.classList.toggle('active');
-            
-            // Prevent body scroll when menu is open on mobile
-            if (navMenu && navMenu.classList.contains('active')) {
-                body.style.overflow = 'hidden';
-            } else {
-                body.style.overflow = 'auto';
-            }
-        };
-        
-        // Close menu when clicking overlay
-        document.addEventListener('DOMContentLoaded', function() {
-            const mobileOverlay = document.getElementById('mobile-menu-overlay');
-            if (mobileOverlay) {
-                mobileOverlay.addEventListener('click', toggleMenu);
-            }
-        });
-    </script>
+    <script src="{% static 'js/cart.js' %}?v=5.0"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

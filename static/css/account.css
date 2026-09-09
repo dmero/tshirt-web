@@ -1,0 +1,20 @@
+.account-page { padding: 56px 20px; min-height: 65vh; }
+.account-card { max-width: 480px; margin: 0 auto; padding: 36px; background: #fff; border: 1px solid #dfe4db; border-radius: 14px; box-shadow: 0 10px 35px #244b4208; }
+.account-symbol { display: grid; place-items: center; width: 48px; height: 48px; margin-bottom: 24px; border-radius: 50%; background: #edf0e7; color: #244b42; font-size: 18px; }
+.account-card h1 { font-size: clamp(28px, 5vw, 36px); color: #244b42; margin: 0 0 16px; line-height: 1.2; }
+.account-card p { color: #59685f; font-size: 14px; line-height: 1.75; }
+.account-card .eyebrow { font-size: 10px; margin-bottom: 12px; }
+.account-card form { margin-top: 26px; }
+.account-card form p { margin-bottom: 20px; }
+.account-card label { display: block; color: #263d32; font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+.account-card input { width: 100%; min-height: 48px; padding: 12px 14px; background: #fff; border: 1px solid #bac6ba; border-radius: 6px; font: 16px Inter, sans-serif; color: #243b34; box-sizing: border-box; }
+.account-card input[aria-invalid=true] { border-color: #ad392b; }
+.account-card .shop-button { width: 100%; margin-top: 6px; min-height: 48px; font-size: 14px; }
+.account-card .errorlist { margin: 12px 0; padding-left: 20px; color: #a13225; font-size: 13px; }
+.account-card .helptext, .account-card ul { font-size: 12px; line-height: 1.65; color: #59685f; }
+.account-card .helptext ul { padding-left: 20px; margin: 10px 0; }
+.account-card form ul { padding-left: 20px; margin: 10px 0 18px; }
+.account-card .account-back { display: block; text-align: center; color: #244b42; font-size: 13px; margin-top: 24px; text-decoration: underline; text-underline-offset: 3px; }
+.account-note { padding: 14px; background: #f5f6f1; border-radius: 6px; margin: 20px 0; }
+.account-footnote { text-align: center; margin-top: 20px; font-size: 12px; color: #6b786c; }
+@media (max-width: 540px) { .account-page { padding: 30px 18px; } .account-card { padding: 26px 22px; } }

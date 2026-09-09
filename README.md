@@ -2,6 +2,35 @@
 
 Modern Django e-commerce platform for browsing t-shirts, managing cart, and secure checkout with **Stripe payment processing**. Full-featured with automated email notifications, order tracking, refund management, and professional admin interface.
 
+## Run the local preview on Windows
+
+From this project folder in Command Prompt, run:
+
+```bat
+run-preview.cmd
+```
+
+In PowerShell, use `./run-preview.cmd`. The launcher uses the project's `.venv`
+Python even if a different Conda environment (such as `tshirt`) is activated.
+Open http://127.0.0.1:8000/ in your browser. If port 8000 is already in use,
+run `run-preview.cmd 127.0.0.1:8001` and open port 8001 instead.
+
+Equivalent command:
+
+```bat
+.venv\Scripts\python.exe manage.py runserver --settings=tshirt_shop.preview_settings
+```
+
+The preview uses SQLite and disables payments and outgoing emails. The plain
+`python manage.py runserver` command uses whichever Python environment is active
+and the normal settings, which retain the existing MySQL configuration unless
+`DATABASE_URL` is set. These are different setups.
+
+For a fresh checkout, create `.venv` with `python -m venv .venv`, then install
+dependencies with `.venv\Scripts\python.exe -m pip install -r requirements.txt`.
+Run migrations with `.venv\Scripts\python.exe manage.py migrate --settings=tshirt_shop.preview_settings`.
+See [DEPLOYMENT.md](DEPLOYMENT.md) for production setup.
+
 ## ✨ Features
 
 ### 🛒 **Shopping Experience**

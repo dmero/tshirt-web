@@ -58,18 +58,18 @@
         <div class="header">
             <h1>🎉 Order Confirmed!</h1>
         </div>
-        
+
         <div class="content">
-            <p>Hi {{ order.customer.user.first_name|default:order.customer.user.username }},</p>
-            
+            <p>Hi {% if order.customer.user %}{{ order.customer.user.first_name|default:order.customer.user.username }}{% else %}there{% endif %},</p>
+
             <p>Thank you for your order! We've received your payment and are processing your order.</p>
-            
+
             <div class="order-details">
                 <h2>Order Details</h2>
                 <p><strong>Order Number:</strong> #{{ order.id }}</p>
                 <p><strong>Order Date:</strong> {{ order.created_at|date:"F d, Y at h:i A" }}</p>
                 <p><strong>Payment Status:</strong> {{ order.get_payment_status_display }}</p>
-                
+
                 <h3>Items Ordered:</h3>
                 {% for item in order.items.all %}
                 <div class="item">
@@ -77,27 +77,27 @@
                     Quantity: {{ item.quantity }} × ${{ item.price }} = ${{ item.get_total_price }}
                 </div>
                 {% endfor %}
-                
+
                 <div class="total">
                     Total Amount: ${{ order.total_amount }}
                 </div>
             </div>
-            
+
             <div class="order-details">
                 <h3>Shipping Address:</h3>
                 <p>{{ order.shipping_address|linebreaks }}</p>
             </div>
-            
-            <p>You can track your order status by visiting: <a href="{{ site_url }}/my-orders/">My Orders</a></p>
-            
+
+            <p>You can track your order status by visiting: <a href="{{ site_url }}/order-success/{{ order.pk }}/?token={{ order.order_lookup_token }}">My Orders</a></p>
+
             <p>If you have any questions, please don't hesitate to contact us.</p>
-            
+
             <p>Thank you for shopping with us!</p>
-            
+
             <p>Best regards,<br>
             <strong>T-Shirt Shop Team</strong></p>
         </div>
-        
+
         <div class="footer">
             <p>This is an automated email. Please do not reply to this message.</p>
             <p>&copy; 2025 T-Shirt Shop. All rights reserved.</p>

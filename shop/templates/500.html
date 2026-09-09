@@ -1,0 +1,7 @@
+{% extends 'registration/account_base.html' %}
+{% block title %}500 - T-Shirt Shop{% endblock %}
+{% block account_content %}
+<h1 id="account-title">Something went wrong.</h1><p>Please try again in a moment. If you were checking out, check your order status before trying another payment.</p>
+<a class="shop-button" href="{% url 'shop:index' %}">Back to the shop</a>
+<a class="account-back" href="{% url 'shop:guest_order_lookup' %}">Track an order</a>
+{% endblock %}

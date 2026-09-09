@@ -51,12 +51,12 @@
         <div class="header">
             <h1>💰 Refund Processed</h1>
         </div>
-        
+
         <div class="content">
-            <p>Hi {{ order.customer.user.first_name|default:order.customer.user.username }},</p>
-            
+            <p>Hi {% if order.customer.user %}{{ order.customer.user.first_name|default:order.customer.user.username }}{% else %}there{% endif %},</p>
+
             <p>Your refund has been processed successfully.</p>
-            
+
             <div class="refund-details">
                 <h2>Refund Details</h2>
                 <p><strong>Order Number:</strong> #{{ order.id }}</p>
@@ -64,21 +64,21 @@
                 <p><strong>Refund Amount:</strong> ${{ order.total_amount }}</p>
                 <p><strong>Payment Status:</strong> Refunded</p>
             </div>
-            
+
             <div class="alert">
                 <strong>⏱ Processing Time:</strong> Please allow 5-10 business days for the refund to appear in your account, depending on your bank or card issuer.
             </div>
-            
+
             <p>The refund will be credited to the original payment method used for this order.</p>
-            
+
             <p>If you have any questions or concerns, please contact our customer support.</p>
-            
+
             <p>We're sorry to see you return this order, and we hope to serve you better in the future.</p>
-            
+
             <p>Best regards,<br>
             <strong>T-Shirt Shop Team</strong></p>
         </div>
-        
+
         <div class="footer">
             <p>This is an automated email. Please do not reply to this message.</p>
             <p>&copy; 2025 T-Shirt Shop. All rights reserved.</p>
