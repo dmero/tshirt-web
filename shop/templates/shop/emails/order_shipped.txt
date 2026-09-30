@@ -1,45 +1,23 @@
-YOUR ORDER HAS SHIPPED!
+T-SHIRT SHOP
+Your order #{{ order.pk }} has shipped.
 
 Hi {% if order.customer.user %}{{ order.customer.user.first_name|default:order.customer.user.username }}{% else %}there{% endif %},
 
-Great news! Your order has been shipped and is on its way to you.
+Your order is on its way. Thanks for shopping with us!
 
-{% if tracking_number %}
-TRACK YOUR PACKAGE
-===================
-Tracking Number: {{ tracking_number }}
-{% if tracking_url %}
-Track at: {{ tracking_url }}
+{% if tracking_url %}Track your package: {{ tracking_url }}
+Carrier updates may take a little time to appear. Check tracking for the latest delivery estimate.
+{% endif %}{% if tracking_number %}Tracking number: {{ tracking_number }}
+{% endif %}{% if not tracking_url and not tracking_number %}Tracking details are not available yet. Check your order page for updates.
 {% endif %}
-{% endif %}
-
-ORDER DETAILS
-=============
-Order Number: #{{ order.id }}
-Order Date: {{ order.created_at|date:"F d, Y" }}
-Shipped Date: {{ order.updated_at|date:"F d, Y" }}
-
-ITEMS SHIPPED
-=============
-{% for item in order.items.all %}
-- {{ item.product.name }} (Size: {{ item.size }}) - Quantity: {{ item.quantity }}
+IN YOUR SHIPMENT
+{% for item in order.items.all %}- {{ item.product.name }} | Size {{ item.size }} | Quantity {{ item.quantity }}
 {% endfor %}
-
-SHIPPING ADDRESS
-================
+DELIVERING TO
 {{ order.shipping_address }}
 
-Expected Delivery: 3-5 business days
+View your order: {{ site_url }}/order-success/{{ order.pk }}/?token={{ order.order_lookup_token }}
 
-You can track your order status by visiting: {{ site_url }}/order-success/{{ order.pk }}/?token={{ order.order_lookup_token }}
-
-If you have any questions about your shipment, please don't hesitate to contact us.
-
-Thank you for your order!
-
-Best regards,
-T-Shirt Shop Team
-
----
-This is an automated email. Please do not reply to this message.
-© 2025 T-Shirt Shop. All rights reserved.
+Thanks for choosing T-Shirt Shop.
+This is an automated shipping update.
+Copyright {% now "Y" %} T-Shirt Shop.

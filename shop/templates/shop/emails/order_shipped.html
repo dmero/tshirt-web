@@ -1,132 +1,36 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .header {
-            background-color: #FF9800;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            border-radius: 5px 5px 0 0;
-        }
-        .content {
-            background-color: #f9f9f9;
-            padding: 20px;
-            border: 1px solid #ddd;
-        }
-        .order-details {
-            background-color: white;
-            padding: 15px;
-            margin: 15px 0;
-            border-left: 4px solid #FF9800;
-        }
-        .tracking-box {
-            background-color: #fff3cd;
-            border: 2px solid #FF9800;
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 5px;
-            text-align: center;
-        }
-        .tracking-number {
-            font-size: 24px;
-            font-weight: bold;
-            color: #FF9800;
-            margin: 10px 0;
-        }
-        .item {
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-        }
-        .item:last-child {
-            border-bottom: none;
-        }
-        .btn {
-            display: inline-block;
-            padding: 12px 30px;
-            background-color: #FF9800;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin: 10px 0;
-        }
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-            font-size: 12px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>📦 Your Order Has Shipped!</h1>
-        </div>
-
-        <div class="content">
-            <p>Hi {% if order.customer.user %}{{ order.customer.user.first_name|default:order.customer.user.username }}{% else %}there{% endif %},</p>
-
-            <p>Great news! Your order has been shipped and is on its way to you.</p>
-
-            {% if tracking_number %}
-            <div class="tracking-box">
-                <h3>📍 Track Your Package</h3>
-                <p>Tracking Number:</p>
-                <div class="tracking-number">{{ tracking_number }}</div>
-                {% if tracking_url %}
-                <a href="{{ tracking_url }}" class="btn">Track Package</a>
-                {% endif %}
-            </div>
-            {% endif %}
-
-            <div class="order-details">
-                <h2>Order Details</h2>
-                <p><strong>Order Number:</strong> #{{ order.id }}</p>
-                <p><strong>Order Date:</strong> {{ order.created_at|date:"F d, Y" }}</p>
-                <p><strong>Shipped Date:</strong> {{ order.updated_at|date:"F d, Y" }}</p>
-
-                <h3>Items Shipped:</h3>
-                {% for item in order.items.all %}
-                <div class="item">
-                    <strong>{{ item.product.name }}</strong> (Size: {{ item.size }})<br>
-                    Quantity: {{ item.quantity }}
-                </div>
-                {% endfor %}
-            </div>
-
-            <div class="order-details">
-                <h3>Shipping Address:</h3>
-                <p>{{ order.shipping_address|linebreaks }}</p>
-            </div>
-
-            <p><strong>Expected Delivery:</strong> 3-5 business days</p>
-
-            <p>You can track your order status by visiting: <a href="{{ site_url }}/order-success/{{ order.pk }}/?token={{ order.order_lookup_token }}">My Orders</a></p>
-
-            <p>If you have any questions about your shipment, please don't hesitate to contact us.</p>
-
-            <p>Thank you for your order!</p>
-
-            <p>Best regards,<br>
-            <strong>T-Shirt Shop Team</strong></p>
-        </div>
-
-        <div class="footer">
-            <p>This is an automated email. Please do not reply to this message.</p>
-            <p>&copy; 2025 T-Shirt Shop. All rights reserved.</p>
-        </div>
-    </div>
-</body>
-</html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Your order has shipped</title></head>
+<body style="margin:0;padding:0;background:#faf9f6;color:#263b34;font-family:Arial,sans-serif;">
+<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">Order #{{ order.pk }} is on its way. View your shipment and delivery details.</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;"><tr><td align="center" style="padding:20px 12px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;max-width:560px;table-layout:fixed;border-collapse:collapse;font-size:14px;line-height:1.5;">
+<tr><td style="padding:0 4px 16px;font:bold 24px Georgia,serif;color:#244b42;">T-Shirt Shop</td></tr>
+<tr><td style="padding:24px;background:#244b42;color:#ffffff;border-radius:12px 12px 0 0;">
+<p style="margin:0 0 8px;font-size:11px;letter-spacing:1.5px;">SHIPPING UPDATE &middot; ORDER #{{ order.pk }}</p>
+<h1 style="margin:0;font:normal 30px/1.2 Georgia,serif;">Your tee is on its way.</h1>
+</td></tr>
+<tr><td style="padding:24px;background:#ffffff;border-right:1px solid #dfe4db;border-left:1px solid #dfe4db;">
+<p style="margin:0 0 8px;">Hi {% if order.customer.user %}{{ order.customer.user.first_name|default:order.customer.user.username }}{% else %}there{% endif %},</p>
+<p style="margin:0 0 20px;color:#52635c;">Your order has shipped. We hope your new favorite finds its way into your everyday rotation.</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;table-layout:fixed;border-collapse:collapse;background:#edf0e7;"><tr><td style="padding:18px;border-radius:8px;">
+{% if tracking_url %}
+<a href="{{ tracking_url }}" style="display:block;background:#244b42;color:#ffffff;text-decoration:none;text-align:center;font-weight:bold;padding:13px 12px;border-radius:6px;">Track your package &rarr;</a>
+{% else %}
+<a href="{{ site_url }}/order-success/{{ order.pk }}/?token={{ order.order_lookup_token }}" style="display:block;background:#244b42;color:#ffffff;text-decoration:none;text-align:center;font-weight:bold;padding:13px 12px;border-radius:6px;">View your order &rarr;</a>
+{% endif %}
+{% if tracking_number %}<p style="margin:12px 0 0;font-size:12px;color:#52635c;">TRACKING NUMBER</p><p style="margin:3px 0 0;font-size:14px;word-break:break-all;overflow-wrap:anywhere;">{{ tracking_number }}</p>{% endif %}
+<p style="margin:12px 0 0;font-size:12px;color:#52635c;">{% if tracking_url %}Carrier updates may take a little time to appear. Check tracking for the latest delivery estimate.{% elif tracking_number %}Use this number on your carrier's tracking page for delivery updates.{% else %}Tracking details are not available yet. Check your order page for updates.{% endif %}</p>
+</td></tr></table>
+<h2 style="margin:22px 0 4px;font-size:15px;">In your shipment</h2>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;table-layout:fixed;border-collapse:collapse;font-size:14px;">
+{% for item in order.items.all %}<tr><td style="padding:10px 0;border-bottom:1px solid #e4e8e0;overflow-wrap:anywhere;word-break:break-word;"><strong>{{ item.product.name }}</strong><br><span style="font-size:12px;color:#52635c;">Size {{ item.size }} &middot; Quantity {{ item.quantity }}</span></td></tr>{% endfor %}
+</table>
+<h2 style="margin:18px 0 5px;font-size:15px;">Delivering to</h2>
+<p style="margin:0;color:#52635c;overflow-wrap:anywhere;word-break:break-word;">{{ order.shipping_address|linebreaksbr }}</p>
+<p style="margin:20px 0 0;font-size:13px;"><a href="{{ site_url }}/order-success/{{ order.pk }}/?token={{ order.order_lookup_token }}" style="color:#244b42;text-decoration:underline;">View order #{{ order.pk }}</a></p>
+</td></tr>
+<tr><td style="padding:16px 24px;background:#edf0e7;border-radius:0 0 12px 12px;color:#52635c;font-size:12px;">Thanks for choosing T-Shirt Shop.<br>Made for your everyday.</td></tr>
+<tr><td style="padding:16px 12px;text-align:center;font-size:11px;color:#68756e;">This is an automated shipping update.<br>&copy; {% now "Y" %} T-Shirt Shop.</td></tr>
+</table></td></tr></table>
+</body></html>
