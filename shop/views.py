@@ -428,7 +428,11 @@ def guest_order_lookup(request):
                 # Store token in session for accessing order details
                 request.session[f'order_token_{order.id}'] = order.order_lookup_token
             except Order.DoesNotExist:
-                error = "Order not found. Check your email and order number. If you ordered while signed in, sign in to view your orders or open the View your order link in your confirmation email."
+                error = "Order not found. Check your email and order number. "
+                if request.user.is_authenticated:
+                    error += "You can also view your orders from My orders."
+                else:
+                    error += "If you ordered while signed in, sign in to view your orders or open the View your order link in your confirmation email."
             except ValueError:
                 error = "Invalid order number."
         else:

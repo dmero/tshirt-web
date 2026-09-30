@@ -9,11 +9,11 @@
 {% else %}{{ block.super }}{% endif %}
 {% endblock %}
 {% block account_content %}
-<h1 id="account-title">Track your order.</h1><p>Enter the email and order number from your confirmation email. For orders placed with an account, sign in or open the View your order link in that email first.</p>
+<h1 id="account-title">Track your order.</h1><p>Enter the email and order number from your confirmation email.{% if not user.is_authenticated %} For orders placed with an account, sign in or open the View your order link in that email first.{% endif %}</p>
 <form method="post">{% csrf_token %}
 {% if error %}<p class="alert alert-error" role="alert" id="lookup-error">{{ error }}</p>{% endif %}
 <p><label for="email">Email address</label><input type="email" name="email" id="email" autocomplete="email" value="{{ request.POST.email|default:'' }}" required {% if error %}aria-describedby="lookup-error"{% endif %}></p>
 <p><label for="order_id">Order number</label><input type="text" name="order_id" id="order_id" inputmode="numeric" value="{{ request.POST.order_id|default:'' }}" placeholder="For example, 123" required></p>
 <button class="shop-button" type="submit">Find my order</button>
-</form><a class="account-back" href="{% url 'shop:my_orders' %}">Have an account? View your orders</a>
+</form><a class="account-back" href="{% url 'shop:my_orders' %}">{% if user.is_authenticated %}View all my orders{% else %}Have an account? Sign in to view your orders{% endif %}</a>
 {% endblock %}
