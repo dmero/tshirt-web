@@ -15,7 +15,7 @@
     <link href="{% static 'css/style.css' %}?v=5.1" rel="stylesheet">
     <link href="{% static 'css/storefront.css' %}?v=3" rel="stylesheet">
 {% block extra_head %}{% endblock %}
-    <link href="{% static 'css/pages.css' %}?v=4" rel="stylesheet">
+    <link href="{% static 'css/pages.css' %}?v=5" rel="stylesheet">
 </head>
 <body>
     <a href="#main-content" class="skip-link">Skip to content</a>
@@ -41,7 +41,6 @@
                         {% csrf_token %}
                         <button type="submit" class="nav-link logout-btn">Logout</button>
                     </form>
-                    <span class="nav-link">Hello, {{ user.first_name|default:user.username }}</span>
                 {% else %}
                     <a href="{% url 'shop:guest_order_lookup' %}" class="nav-link">Track Order</a>
                     <a href="{% url 'login' %}" class="nav-link">Sign in</a>
@@ -53,6 +52,17 @@
                     <i class="fas fa-shopping-cart"></i>
                     <span class="cart-count" id="cart-count">0</span>
                 </button>
+            </div>
+        </div>
+        <div class="account-status-bar">
+            <div class="container account-status-content">
+                {% if user.is_authenticated %}
+                    <span class="account-status-label"><i class="fas fa-user-check" aria-hidden="true"></i><span>Signed in as <strong>{{ user.first_name|default:user.username }}</strong></span></span>
+                    <a href="{% url 'shop:my_orders' %}">My orders <span aria-hidden="true">&rarr;</span></a>
+                {% else %}
+                    <span class="account-status-label"><i class="fas fa-user" aria-hidden="true"></i><span>Shopping as a guest</span></span>
+                    <a href="{% url 'login' %}">Sign in <span aria-hidden="true">&rarr;</span></a>
+                {% endif %}
             </div>
         </div>
     </nav>
@@ -120,7 +130,14 @@
             </div>
             <div class="footer-section">
                 <h4>Your Account</h4>
-                <a href="{% url 'login' %}">Sign in</a>
+                {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="footer-signout">Sign out</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}">Sign in</a>
+                {% endif %}
                 <a href="{% url 'shop:my_orders' %}">Order history</a>
             </div>
         </div>

@@ -62,6 +62,12 @@ button:disabled { cursor: not-allowed; opacity: .6; }
 .messages { max-width: 1180px; margin: 20px auto 0; padding: 0 20px; }
 .alert { border-radius: 8px; font-size: 14px; }
 .nav-menu .logout-btn { border: 0; background: transparent; font: inherit; padding: 10px 0; color: var(--shop-ink); cursor: pointer; }
+.account-status-bar { background: #edf0e7; border-top: 1px solid var(--shop-border); }
+.account-status-content { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 44px; font: 12px/1.5 Inter, sans-serif; color: var(--shop-ink); }
+.account-status-label { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.account-status-label span { overflow-wrap: anywhere; }
+.account-status-content > a { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; min-height: 44px; color: var(--shop-ink); font-weight: 600; }
+.footer-signout { border: 0; background: none; color: inherit; padding: 0; min-height: 44px; font: inherit; cursor: pointer; }
 .product-info-section { padding: 26px; }
 .product-image-wrapper { padding: 24px; }
 .product-main-image { display: block; width: 100%; max-height: 480px; object-fit: contain; }
