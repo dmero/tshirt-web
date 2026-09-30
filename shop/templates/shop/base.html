@@ -15,7 +15,7 @@
     <link href="{% static 'css/style.css' %}?v=5.1" rel="stylesheet">
     <link href="{% static 'css/storefront.css' %}?v=3" rel="stylesheet">
 {% block extra_head %}{% endblock %}
-    <link href="{% static 'css/pages.css' %}?v=5" rel="stylesheet">
+    <link href="{% static 'css/pages.css' %}?v=6" rel="stylesheet">
 </head>
 <body>
     <a href="#main-content" class="skip-link">Skip to content</a>
@@ -39,7 +39,7 @@
                     <a href="{% url 'shop:my_orders' %}" class="nav-link">My Orders</a>
                     <form method="post" action="{% url 'logout' %}" style="display: inline;">
                         {% csrf_token %}
-                        <button type="submit" class="nav-link logout-btn">Logout</button>
+                        <button type="submit" class="nav-link logout-btn">Sign out</button>
                     </form>
                 {% else %}
                     <a href="{% url 'shop:guest_order_lookup' %}" class="nav-link">Track Order</a>
@@ -50,6 +50,7 @@
                 <!-- Cart Icon -->
                 <button class="cart-btn" onclick="toggleCart()" aria-label="Open shopping bag" aria-expanded="false" aria-controls="cart-sidebar">
                     <i class="fas fa-shopping-cart"></i>
+                    <span class="mobile-cart-label">Shopping bag</span>
                     <span class="cart-count" id="cart-count">0</span>
                 </button>
             </div>
@@ -146,7 +147,7 @@
         </div>
     </footer>
 
-    <script src="{% static 'js/cart.js' %}?v=5.0"></script>
+    <script src="{% static 'js/cart.js' %}?v=5.1"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Toggle cart sidebar
 function toggleCart() {
+    if (document.querySelector('.nav-menu.active')) toggleMenu();
     const cartSidebar = document.getElementById('cart-sidebar');
     const cartOverlay = document.getElementById('cart-overlay');
 
@@ -32,7 +33,9 @@ function toggleCart() {
         cartSidebar.inert = true;
         cartSidebar.setAttribute('aria-hidden', 'true');
         document.querySelector('.cart-btn').setAttribute('aria-expanded', 'false');
-        document.querySelector('.cart-btn').focus();
+        const returnFocus = window.matchMedia('(max-width: 768px)').matches
+            ? document.querySelector('.menu-toggle') : document.querySelector('.cart-btn');
+        returnFocus.focus();
     }
 }
 
@@ -45,6 +48,7 @@ function toggleMenu() {
 
     navMenu.classList.toggle('active');
     menuToggle.setAttribute('aria-expanded', navMenu.classList.contains('active'));
+    menuToggle.setAttribute('aria-label', navMenu.classList.contains('active') ? 'Close navigation' : 'Open navigation');
     menuToggle.classList.toggle('active');
 
     if (mobileOverlay) {
@@ -56,8 +60,13 @@ function toggleMenu() {
         body.style.overflow = 'hidden';
     } else {
         body.style.overflow = 'auto';
+        if (navMenu.contains(document.activeElement)) menuToggle.focus();
     }
 }
+
+window.matchMedia('(max-width: 768px)').addEventListener('change', function(event) {
+    if (!event.matches && document.querySelector('.nav-menu.active')) toggleMenu();
+});
 
 // Close mobile menu when clicking outside
 document.addEventListener('click', function(event) {
