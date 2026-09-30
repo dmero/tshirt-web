@@ -416,14 +416,19 @@ def guest_order_lookup(request):
 
         if email and order_id:
             try:
-                order = Order.objects.get(
-                    id=order_id,
-                    guest_email=email
-                )
+                candidate = Order.objects.select_related('customer__user').get(id=order_id.lstrip('#'))
+                is_guest = candidate.is_guest_order()
+                expected_email = candidate.guest_email if is_guest else candidate.customer.user.email
+                owner = request.user.is_authenticated and candidate.customer.user_id == request.user.pk
+                verified_link = bool(candidate.order_lookup_token) and request.session.get(
+                    f'order_token_{candidate.pk}') == candidate.order_lookup_token
+                if not expected_email or expected_email.casefold() != email.casefold() or not (is_guest or owner or verified_link):
+                    raise Order.DoesNotExist
+                order = candidate
                 # Store token in session for accessing order details
                 request.session[f'order_token_{order.id}'] = order.order_lookup_token
             except Order.DoesNotExist:
-                error = "Order not found. Please check your email and order number."
+                error = "Order not found. Check your email and order number. If you ordered while signed in, sign in to view your orders or open the View your order link in your confirmation email."
             except ValueError:
                 error = "Invalid order number."
         else:

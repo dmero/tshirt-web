@@ -9,7 +9,7 @@
 {% else %}{{ block.super }}{% endif %}
 {% endblock %}
 {% block account_content %}
-<h1 id="account-title">Track your order.</h1><p>Enter the email and order number from your confirmation email.</p>
+<h1 id="account-title">Track your order.</h1><p>Enter the email and order number from your confirmation email. For orders placed with an account, sign in or open the View your order link in that email first.</p>
 <form method="post">{% csrf_token %}
 {% if error %}<p class="alert alert-error" role="alert" id="lookup-error">{{ error }}</p>{% endif %}
 <p><label for="email">Email address</label><input type="email" name="email" id="email" autocomplete="email" value="{{ request.POST.email|default:'' }}" required {% if error %}aria-describedby="lookup-error"{% endif %}></p>

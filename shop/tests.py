@@ -216,3 +216,42 @@ class StoreTests(TestCase):
         with patch('stripe.Refund.create') as refund:
             self.assertEqual(self.client.get(f'/order/{order.pk}/refund/').status_code, 200)
             refund.assert_not_called()
+
+class OrderLookupTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user('lookup-owner', email='owner@example.com')
+        self.order = Order.objects.create(customer=Customer.objects.create(user=self.user), total_amount=25, shipping_address='Private address')
+
+    def lookup(self, email='owner@example.com'):
+        return self.client.post('/guest-order-lookup/', {'email': email, 'order_id': self.order.pk})
+
+    def test_account_order_requires_owner_or_email_link(self):
+        response = self.lookup()
+        self.assertIsNone(response.context['order'])
+        self.assertNotContains(response, 'Private address')
+        self.assertContains(response, 'sign in to view your orders')
+
+    def test_email_link_then_tracking_finds_account_order(self):
+        self.assertEqual(self.client.get(f'/order-success/{self.order.pk}/', {'token': self.order.order_lookup_token}).status_code, 200)
+        self.assertEqual(self.lookup('OWNER@example.com').context['order'], self.order)
+        self.assertIsNone(self.lookup('wrong@example.com').context['order'])
+
+    def test_signed_in_owner_can_track(self):
+        self.client.force_login(self.user)
+        self.assertEqual(self.lookup().context['order'], self.order)
+
+    def test_other_account_cannot_track(self):
+        other = User.objects.create_user('other')
+        self.client.force_login(other)
+        self.assertIsNone(self.lookup().context['order'])
+
+    def test_guest_email_case_and_hash_number(self):
+        guest = Order.objects.create(customer=Customer.objects.create(guest_email='Guest@example.com'), guest_email='Guest@example.com', total_amount=25, shipping_address='Guest address')
+        response = self.client.post('/guest-order-lookup/', {'email': ' guest@EXAMPLE.com ', 'order_id': f'#{guest.pk}'})
+        self.assertEqual(response.context['order'], guest)
+
+    def test_invalid_and_missing_orders(self):
+        for number in ['invalid', '999999']:
+            response = self.client.post('/guest-order-lookup/', {'email': 'owner@example.com', 'order_id': number})
+            self.assertEqual(response.status_code, 200)
+            self.assertIsNone(response.context['order'])
