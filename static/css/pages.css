@@ -50,7 +50,8 @@ button:disabled { cursor: not-allowed; opacity: .6; }
 .modern-input { min-height: 48px; background: #fff; border: 1px solid #bac6ba; border-radius: 6px; font-size: 16px; }
 .modern-input-group label { color: var(--shop-ink); font-size: 13px; }
 .modern-input:focus { border-color: var(--shop-ink); }
-.modern-card-element { border: 1px solid #bac6ba; border-radius: 6px; background: white; }
+/* Stripe manages the inner iframe width; flex layout can collapse its wrapper. */
+.modern-card-element { display: block; width: 100%; border: 1px solid #bac6ba; border-radius: 6px; background: white; transition: border-color .2s, box-shadow .2s; }
 .step.completed .step-icon, .step.active .step-icon, .step-line.completed { background: var(--shop-ink); border-color: var(--shop-ink); box-shadow: none; }
 .product-price-badge { background: #edf0e7; border: 0; padding: 20px; }
 .product-price-badge .price-amount { color: var(--shop-ink); font-size: 32px; }
