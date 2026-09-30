@@ -31,7 +31,11 @@
 .order-note { background: #edf0e7; padding: 16px; font-size: 14px; border-radius: 8px; margin-bottom: 24px; }
 .btn-primary, .btn-secondary, .cart-checkout-btn, .checkout-btn, .checkout-submit-btn, .modern-add-to-cart-btn, .browse-products-btn { display: inline-flex; justify-content: center; align-items: center; gap: 10px; min-height: 48px; padding: 13px 22px; background: var(--shop-ink); border: 1px solid var(--shop-ink); color: white; border-radius: 6px; box-shadow: none; font: 600 14px Inter, sans-serif; text-transform: none; letter-spacing: normal; text-decoration: none; cursor: pointer; }
 .btn-secondary { background: white; color: var(--shop-ink); }
-.cart-checkout-btn, .checkout-btn, .checkout-submit-btn, .modern-add-to-cart-btn { width: 100%; }
+.checkout-btn, .checkout-submit-btn, .modern-add-to-cart-btn { width: 100%; }
+/* Keep the shopping bag button inside the summary, including its side margins. */
+.cart-checkout-btn { display: flex; width: auto; margin: 24px; text-align: center; }
+.cart-items-section, .cart-summary-section, .cart-item-info { min-width: 0; }
+.cart-item-info .product-name { overflow-wrap: anywhere; }
 .btn-primary:hover, .cart-checkout-btn:hover, .checkout-btn:hover, .checkout-submit-btn:hover, .modern-add-to-cart-btn:hover { background: #173b33; color: white; transform: none; box-shadow: none; }
 button:disabled { cursor: not-allowed; opacity: .6; }
 .checkout-page, .product-detail-page, .cart-page-wrapper { background: var(--shop-surface); padding: 40px 0 60px; }
